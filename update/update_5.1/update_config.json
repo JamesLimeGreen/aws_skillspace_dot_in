@@ -1,0 +1,118 @@
+{
+    "require_version" : "5.0",
+    "directory": [
+      {
+        "name" : "application/views/mobile/razorpay"
+      },
+      {
+        "name" : "application/views/payment/razorpay"
+      }
+    ],
+    "sql_file": "",
+    "files": [
+      {
+          "root_directory"    : "update/update_5.1/application/controllers/Admin.php",
+          "update_directory"  : "application/controllers/Admin.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/controllers/Home.php",
+          "update_directory"  : "application/controllers/Home.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/models/Crud_model.php",
+          "update_directory"  : "application/models/Crud_model.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/models/Payment_model.php",
+          "update_directory"  : "application/models/Payment_model.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/admin/google_drive_video_lesson_add.php",
+          "update_directory"  : "application/views/backend/admin/google_drive_video_lesson_add.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/admin/google_drive_video_lesson_edit.php",
+          "update_directory"  : "application/views/backend/admin/google_drive_video_lesson_edit.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/admin/lesson_edit.php",
+          "update_directory"  : "application/views/backend/admin/lesson_edit.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/admin/lesson_add.php",
+          "update_directory"  : "application/views/backend/admin/lesson_add.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/admin/lesson_types.php",
+          "update_directory"  : "application/views/backend/admin/lesson_types.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/admin/payment_settings.php",
+          "update_directory"  : "application/views/backend/admin/payment_settings.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/user/google_drive_video_lesson_add.php",
+          "update_directory"  : "application/views/backend/user/google_drive_video_lesson_add.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/user/google_drive_video_lesson_edit.php",
+          "update_directory"  : "application/views/backend/user/google_drive_video_lesson_edit.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/user/lesson_edit.php",
+          "update_directory"  : "application/views/backend/user/lesson_edit.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/user/lesson_add.php",
+          "update_directory"  : "application/views/backend/user/lesson_add.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/backend/user/lesson_types.php",
+          "update_directory"  : "application/views/backend/user/lesson_types.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/frontend/default/course_page.php",
+          "update_directory"  : "application/views/frontend/default/course_page.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/frontend/default/modal.php",
+          "update_directory"  : "application/views/frontend/default/modal.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/frontend/default/preview_free_lesson.php",
+          "update_directory"  : "application/views/frontend/default/preview_free_lesson.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/lessons/general_course_content_body.php",
+          "update_directory"  : "application/views/lessons/general_course_content_body.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/mobile/payment_gateway.php",
+          "update_directory"  : "application/views/mobile/payment_gateway.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/mobile/razorpay/razorpay_checkout.php",
+          "update_directory"  : "application/views/mobile/razorpay/razorpay_checkout.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/payment/payment_gateway.php",
+          "update_directory"  : "application/views/payment/payment_gateway.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/application/views/payment/razorpay/razorpay_checkout.php",
+          "update_directory"  : "application/views/payment/razorpay/razorpay_checkout.php"
+      },
+      {
+          "root_directory"    : "update/update_5.1/assets/frontend/default/css/main.css",
+          "update_directory"  : "assets/frontend/default/css/main.css"
+      },
+      {
+          "root_directory"    : "update/update_5.1/assets/payment/razorpay.png",
+          "update_directory"  : "assets/payment/razorpay.png"
+      },
+      {
+          "root_directory"    : "update/update_5.1/assets/payment/razorpay-light.png",
+          "update_directory"  : "assets/payment/razorpay-light.png"
+      }
+    ]
+  }

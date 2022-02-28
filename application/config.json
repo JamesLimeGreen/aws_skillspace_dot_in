@@ -1,0 +1,68 @@
+{
+    "name" : "Course Analytics",
+    "unique_identifier" : "course_analytics",
+    "version" : "1.0",
+    "about" : "You will be able to see the course progress for all enrolled students here. Which will help you understand the needs of your students. On the left side of the chart, you will see the range of the top number of students, and on the bottom of the chart, you will see the range of percentage. Also, you will able to see the table of the chart on the right side.",
+    "directories" :
+    [
+        {
+            "name" : "assets/backend/amcharts/v4"
+        }
+    ],
+    "sql_file"  : "updater.php",
+    "files"     :
+    [
+        {
+            "root_directory"    : "uploads/addons/course-analytics/controllers/addons/Course_analytics.php",
+            "update_directory"  : "application/controllers/addons/Course_analytics.php"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/models/addons/Course_analytics_model.php",
+            "update_directory"  : "application/models/addons/Course_analytics_model.php"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/views/backend/admin/course_analytic_scripts.php",
+            "update_directory"  : "application/views/backend/admin/course_analytic_scripts.php"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/views/backend/admin/course_analytics.php",
+            "update_directory"  : "application/views/backend/admin/course_analytics.php"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/views/backend/admin/course_analytics_body.php",
+            "update_directory"  : "application/views/backend/admin/course_analytics_body.php"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/views/backend/admin/course_enrolment_analytics_body.php",
+            "update_directory"  : "application/views/backend/admin/course_enrolment_analytics_body.php"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/views/backend/user/course_analytic_scripts.php",
+            "update_directory"  : "application/views/backend/user/course_analytic_scripts.php"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/views/backend/user/course_analytics.php",
+            "update_directory"  : "application/views/backend/user/course_analytics.php"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/views/backend/user/course_analytics_body.php",
+            "update_directory"  : "application/views/backend/user/course_analytics_body.php"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/views/backend/user/course_enrolment_analytics_body.php",
+            "update_directory"  : "application/views/backend/user/course_enrolment_analytics_body.php"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/assets/backend/amcharts/v4/animated.js",
+            "update_directory"  : "assets/backend/amcharts/v4/animated.js"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/assets/backend/amcharts/v4/charts.js",
+            "update_directory"  : "assets/backend/amcharts/v4/charts.js"
+        },
+        {
+            "root_directory"    : "uploads/addons/course-analytics/assets/backend/amcharts/v4/core.js",
+            "update_directory"  : "assets/backend/amcharts/v4/core.js"
+        }
+    ]
+}

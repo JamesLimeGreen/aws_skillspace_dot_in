@@ -1,0 +1,100 @@
+{
+  "require_version" : "5.2",
+  "directory": [],
+  "sql_file": "",
+  "libraries": [],
+  "files": [
+    {
+        "root_directory"    : "update/update_5.3/application/controllers/Api.php",
+        "update_directory"  : "application/controllers/Api.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/controllers/Home.php",
+        "update_directory"  : "application/controllers/Home.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/controllers/Login.php",
+        "update_directory"  : "application/controllers/Login.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/helpers/common_helper.php",
+        "update_directory"  : "application/helpers/common_helper.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/helpers/multi_language_helper.php",
+        "update_directory"  : "application/helpers/multi_language_helper.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/models/Crud_model.php",
+        "update_directory"  : "application/models/Crud_model.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/models/Social_login_modal.php",
+        "update_directory"  : "application/models/Social_login_modal.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/backend/header.php",
+        "update_directory"  : "application/views/backend/header.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/backend/common_scripts.php",
+        "update_directory"  : "application/views/backend/common_scripts.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/backend/admin/dashboard-chart.php",
+        "update_directory"  : "application/views/backend/admin/dashboard-chart.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/backend/admin/smtp_settings.php",
+        "update_directory"  : "application/views/backend/admin/smtp_settings.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/backend/admin/social_login.php",
+        "update_directory"  : "application/views/backend/admin/social_login.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/backend/user/dashboard-chart.php",
+        "update_directory"  : "application/views/backend/user/dashboard-chart.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/frontend/default/compare.php",
+        "update_directory"  : "application/views/frontend/default/compare.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/frontend/default/course_page.php",
+        "update_directory"  : "application/views/frontend/default/course_page.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/frontend/default/home.php",
+        "update_directory"  : "application/views/frontend/default/home.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/frontend/default/includes_bottom.php",
+        "update_directory"  : "application/views/frontend/default/includes_bottom.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/frontend/default/menu.php",
+        "update_directory"  : "application/views/frontend/default/menu.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/frontend/default/my_messages.php",
+        "update_directory"  : "application/views/frontend/default/my_messages.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/frontend/default/shopping_cart.php",
+        "update_directory"  : "application/views/frontend/default/shopping_cart.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/frontend/default/shopping_cart_inner_view.php",
+        "update_directory"  : "application/views/frontend/default/shopping_cart_inner_view.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/lessons/general_course_content_body.php",
+        "update_directory"  : "application/views/lessons/general_course_content_body.php"
+    },
+    {
+        "root_directory"    : "update/update_5.3/application/views/lessons/common_scripts.php",
+        "update_directory"  : "application/views/lessons/common_scripts.php"
+    }
+  ]
+}

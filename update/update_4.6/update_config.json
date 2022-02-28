@@ -1,0 +1,55 @@
+{
+    "require_version" : "4.5",
+    "directory": [],
+    "sql_file": "",
+    "files": [
+      {
+          "root_directory"    : "update/update_4.6/application/controllers/Api.php",
+          "update_directory"  : "application/controllers/Api.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/application/helpers/common_helper.php",
+          "update_directory"  : "application/helpers/common_helper.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/application/models/Email_model.php",
+          "update_directory"  : "application/models/Email_model.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/application/views/backend/admin/course_add.php",
+          "update_directory"  : "application/views/backend/admin/course_add.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/application/views/backend/admin/course_edit.php",
+          "update_directory"  : "application/views/backend/admin/course_edit.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/application/views/backend/user/course_add.php",
+          "update_directory"  : "application/views/backend/user/course_add.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/application/views/backend/user/course_edit.php",
+          "update_directory"  : "application/views/backend/user/course_edit.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/application/views/backend/modal.php",
+          "update_directory"  : "application/views/backend/modal.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/application/views/frontend/default/common_scripts.php",
+          "update_directory"  : "application/views/frontend/default/common_scripts.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/application/views/frontend/default/menu.php",
+          "update_directory"  : "application/views/frontend/default/menu.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/application/views/lessons/lessons.php",
+          "update_directory"  : "application/views/lessons/lessons.php"
+      },
+      {
+          "root_directory"    : "update/update_4.6/assets/backend/css/main.css",
+          "update_directory"  : "assets/backend/css/main.css"
+      }
+    ]
+  }

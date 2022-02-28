@@ -1,0 +1,47 @@
+{
+    "require_version" : "4.6",
+    "directory": [],
+    "sql_file": "",
+    "files": [
+      {
+          "root_directory"    : "update/update_4.7/application/controllers/Api_instructor.php",
+          "update_directory"  : "application/controllers/Api_instructor.php"
+      },
+      {
+          "root_directory"    : "update/update_4.7/application/helpers/common_helper.php",
+          "update_directory"  : "application/helpers/common_helper.php"
+      },
+      {
+          "root_directory"    : "update/update_4.7/application/models/Email_model.php",
+          "update_directory"  : "application/models/Email_model.php"
+      },
+      {
+          "root_directory"    : "update/update_4.7/application/models/Crud_model.php",
+          "update_directory"  : "application/models/Crud_model.php"
+      },
+      {
+          "root_directory"    : "update/update_4.7/application/models/Api_instructor_model.php",
+          "update_directory"  : "application/models/Api_instructor_model.php"
+      },
+      {
+          "root_directory"    : "update/update_4.7/application/views/backend/admin/course_edit.php",
+          "update_directory"  : "application/views/backend/admin/course_edit.php"
+      },
+      {
+          "root_directory"    : "update/update_4.7/application/views/backend/user/course_edit.php",
+          "update_directory"  : "application/views/backend/user/course_edit.php"
+      },
+      {
+          "root_directory"    : "update/update_4.7/application/views/backend/includes_bottom.php",
+          "update_directory"  : "application/views/backend/includes_bottom.php"
+      },
+      {
+          "root_directory"    : "update/update_4.7/application/views/frontend/default/index.php",
+          "update_directory"  : "application/views/frontend/default/index.php"
+      },
+      {
+          "root_directory"    : "update/update_4.7/assets/backend/css/main.css",
+          "update_directory"  : "assets/backend/css/main.css"
+      }
+    ]
+  }
