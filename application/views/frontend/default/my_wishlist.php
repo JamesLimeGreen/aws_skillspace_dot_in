@@ -50,9 +50,9 @@
                     },
                     success: function(response) {
                         if ($(elem).hasClass('active')) {
-                            $(elem).removeClass('active')
+                            $(elem).removeClass('active');
                         } else {
-                            $(elem).addClass('active')
+                            $(elem).addClass('active'); 
                         }
                         $('#wishlist_items').html(response);
                         $.ajax({

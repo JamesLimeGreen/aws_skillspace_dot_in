@@ -75,4 +75,12 @@ $route['blogs/(:any)'] = "blog/blogs/$1";
 
 // Jamtech New code 03 Dec 2021
 
-$route['lang/(:any)']		= "Home/home";
+$route['user']		= "User";
+$route['User']		= "User";
+
+$route['admin']		= "Admin";
+$route['Admin']		= "Admin";
+
+$route['login']		= "Home/login";
+
+$route['(:any)']		= "Home/home";

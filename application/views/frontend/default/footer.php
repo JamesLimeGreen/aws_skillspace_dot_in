@@ -5,7 +5,11 @@
       <div class="col-6 col-sm-6 col-md-3">
         <h5 class="text-muted"><?php echo site_phrase('top_categories'); ?></h5>
         <ul class="list-unstyled text-small">
-          <?php $top_10_categories = $this->crud_model->get_top_categories(6, 'sub_category_id'); ?>
+          <?php 
+            
+            $top_10_categories=$this->crud_model->get_top_categories(6, 'sub_category_id');
+            
+          ?>
           <?php if(count($top_10_categories)>0){ ?>
           <?php foreach($top_10_categories as $top_10_category): ?>
             <?php $category_details = $this->crud_model->get_category_details_by_id($top_10_category['sub_category_id'])->row_array(); ?>

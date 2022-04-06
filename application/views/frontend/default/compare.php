@@ -6,7 +6,7 @@
         font-size: 14px;
     }
 </style>
-<section class="category-header-area" style="background-image: url('<?php echo base_url('uploads/system/course_page_banner.png'); ?>');">
+<section class="category-header-area" style="background-color:#1d2b50">
     <!-- <div class="image-placeholder-1"></div> -->
     <div class="container-lg breadcrumb-container">
         <nav aria-label="breadcrumb">

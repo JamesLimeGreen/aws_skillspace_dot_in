@@ -2,7 +2,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position-x: right;
-    background-color: #5b5b5b;">
+    background-color: #1d2b51;">
     <!-- <div class="image-placeholder-1"></div> -->
     <div class="container-lg breadcrumb-container">
         <nav aria-label="breadcrumb">

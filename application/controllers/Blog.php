@@ -111,10 +111,18 @@ class Blog extends CI_Controller
 
     //blog details page
     function details($blog_slug = "", $blog_id = ""){
-        $page_data['blog_details'] = $this->crud_model->get_all_blogs($blog_id)->row_array();
-        $page_data['page_name'] = 'blog_details';
-        $page_data['page_title'] = site_phrase('blog_details');
-        $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
+        if(!empty($blog_id)){
+            $page_data['blog_details'] = $this->crud_model->get_all_blogs($blog_id)->row_array();
+            if($page_data['blog_details']){
+                $page_data['page_name'] = 'blog_details';
+                $page_data['page_title'] = site_phrase('blog_details');
+                $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
+            }else{
+                return redirect(base_url('home'));
+            }
+        }else{
+            return redirect(base_url('home'));
+        }
     }
 
     function add_blog_comment($blog_id = ""){

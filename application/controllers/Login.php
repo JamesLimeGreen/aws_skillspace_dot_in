@@ -67,7 +67,11 @@ class Login extends CI_Controller
     }
     
     public function fb_validate_login($access_token = "", $fb_user_id = "") {
-        $this->social_login_modal->fb_validate_login($access_token, $fb_user_id);
+        if(!empty($access_token)){
+           $this->social_login_modal->fb_validate_login($access_token, $fb_user_id);
+        }else{
+            return redirect(base_url('home'));
+        }
     }
 
 

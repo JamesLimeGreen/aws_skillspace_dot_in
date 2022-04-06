@@ -29,7 +29,7 @@ class Home extends CI_Controller
 
         $this->session->set_userdata("lang","en");
         
-        $language=$this->uri->segment(2);
+        $language=$this->uri->segment(1);
         
         $language =  $this->crud_model->get_lang_long($language)->row_array();
         if($language){
@@ -195,10 +195,19 @@ class Home extends CI_Controller
 
     public function instructor_page($instructor_id = "")
     {
-        $page_data['page_name'] = "instructor_page";
-        $page_data['page_title'] = site_phrase('instructor_page');
-        $page_data['instructor_id'] = $instructor_id;
-        $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
+        if(!empty($instructor_id)){
+            $page_data['page_name'] = "instructor_page";
+            $page_data['page_title'] = site_phrase('instructor_page');
+            $page_data['instructor_details'] = $this->user_model->get_all_user($instructor_id)->row_array();
+            if($page_data['instructor_details']){
+                $page_data['instructor_id'] = $instructor_id;
+                $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
+            }else{
+                return redirect(base_url('home'));
+            }
+        }else{
+            return redirect(base_url('home'));
+        }
     }
 
     public function my_courses()
@@ -361,13 +370,17 @@ class Home extends CI_Controller
             $this->session->set_userdata('cart_items', array());
         }
 
-        $course_id = $this->input->post('course_id');
-        $previous_cart_items = $this->session->userdata('cart_items');
-        if (!in_array($course_id, $previous_cart_items)) {
-            array_push($previous_cart_items, $course_id);
+        if(!empty($this->input->post('course_id'))){
+            $course_id = $this->input->post('course_id');
+            $previous_cart_items = $this->session->userdata('cart_items');
+            if (!in_array($course_id, $previous_cart_items)) {
+                array_push($previous_cart_items, $course_id);
+            }
+            $this->session->set_userdata('cart_items', $previous_cart_items);
+            $this->load->view('frontend/' . get_frontend_settings('theme') . '/cart_items');
+        }else{
+            return redirect(base_url('home'));
         }
-        $this->session->set_userdata('cart_items', $previous_cart_items);
-        $this->load->view('frontend/' . get_frontend_settings('theme') . '/cart_items');
     }
 
     public function refreshWishList()
@@ -702,11 +715,15 @@ class Home extends CI_Controller
     }
 
     public function my_courses_by_category()
-    {
-        $category_id = $this->input->post('category_id');
-        $course_details = $this->crud_model->get_my_courses_by_category_id($category_id)->result_array();
-        $page_data['my_courses'] = $course_details;
-        $this->load->view('frontend/' . get_frontend_settings('theme') . '/reload_my_courses', $page_data);
+    {   
+        if(!empty($this->input->post('category_id'))){
+            $category_id = $this->input->post('category_id');
+            $course_details = $this->crud_model->get_my_courses_by_category_id($category_id)->result_array();
+            $page_data['my_courses'] = $course_details;
+            $this->load->view('frontend/' . get_frontend_settings('theme') . '/reload_my_courses', $page_data);
+        }else{
+            return redirect(base_url('home'));
+        }
     }
 
     public function search($search_string = "")
@@ -1094,6 +1111,8 @@ class Home extends CI_Controller
                 $this->session->set_flashdata('error_message', site_phrase('you_do_not_have_permission_to_access_this_course'));
                 redirect(site_url('home'), 'refresh');
             }
+        }else if(!$course_details){
+            redirect(site_url('home'), 'refresh');
         }
     }
 

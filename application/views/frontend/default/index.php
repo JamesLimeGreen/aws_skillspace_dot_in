@@ -5,7 +5,17 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
 <link rel="manifest" href="/site.webmanifest">
+
+<?php
+if ($page_name=='home'){
+$languages = $this->crud_model->getAllLanguage();
+foreach($languages as $lang){
+ ?>
+	<link rel="alternate" hreflang="<?php echo $lang['lang_sort']; ?>" href="https://skillspace.co.in/<?php echo $lang['lang_sort']; ?>/" />
+<?php } } ?>
+
 <?php if ($page_name == 'course_page'):
 	$title = $this->crud_model->get_course_by_id($course_id)->row_array()?>
 	<title><?php echo $title['title'].' | '.get_settings('system_name'); ?></title>

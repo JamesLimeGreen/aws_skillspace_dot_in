@@ -15,7 +15,7 @@ if (isset($sub_category_id)) {
 }
 ?>
 
-<section class="category-header-area" style="background-image: url('<?php echo base_url('uploads/system/course_page_banner.png'); ?>');">
+<section class="category-header-area" style="background-color: #1d2b51;">
     <!-- <div class="image-placeholder-1"></div> -->
     <div class="container-lg breadcrumb-container">
         <nav aria-label="breadcrumb">

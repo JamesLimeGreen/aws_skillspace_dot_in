@@ -4,14 +4,15 @@ $cart_items = $this->session->userdata('cart_items');
 ?>
 <div class="icon">
     <a href=""><i class="far fa-heart"></i></a>
-    <span class="number"><?php echo sizeof($this->crud_model->getWishLists()); ?></span>
+    <span class="number"><?php echo @sizeof($this->crud_model->getWishLists()); ?></span>
 </div>
 <div class="dropdown course-list-dropdown corner-triangle top-right">
     <div class="list-wrapper">
         <div class="item-list">
             <ul>
                 <?php
-                foreach (json_decode($user_details['wishlist']) as $wishlist) :
+                if($user_details['wishlist']){
+                 foreach (json_decode($user_details['wishlist']) as $wishlist) :
                     $course_details = $this->crud_model->get_course_by_id($wishlist)->row_array();
                     $instructor_details = $this->user_model->get_all_user($course_details['user_id'])->row_array();
                 ?>
@@ -69,6 +70,7 @@ $cart_items = $this->session->userdata('cart_items');
                         </div>
                     </li>
                 <?php endforeach; ?>
+            <?php } ?>
             </ul>
         </div>
         <div class="dropdown-footer">

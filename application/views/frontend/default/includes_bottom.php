@@ -58,7 +58,7 @@
             type: 'post',
             data: {language : language},
             success: function(response) {
-               var str = window.location.href = '<?php echo base_url(); ?>lang/'+response+'/';                   
+               var str = window.location.href = '<?php echo base_url(); ?>'+response+'/';                   
               //setTimeout(function(){ location.reload(); }, 500);
             }
         });

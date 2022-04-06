@@ -848,7 +848,8 @@ class Crud_model extends CI_Model
         }
     }
 
-    function get_top_categories($limit = "10", $category_column = "category_id"){
+    /*function get_top_categories($limit = "10", $category_column = "category_id"){
+      
         $query = $this->db
             ->select($category_column.", count(*) AS course_number",false)
             ->from ("course")
@@ -857,7 +858,22 @@ class Crud_model extends CI_Model
             ->where('status', 'active')
             ->limit($limit)
             ->get();
+        print_r($this->db->last_query());      
         return $query->result_array();
+        
+    }*/
+
+    function get_top_categories($limit = "10", $category_column = "category_id"){
+      
+        $query = $this->db
+            ->select($category_column)
+            ->from ("course")
+            ->group_by($category_column)
+            ->where('status', 'active')
+            ->limit($limit)
+            ->get(); 
+        return $query->result_array();
+        
     }
 
     public function get_top_courses($lang=NULL)
@@ -3154,6 +3170,10 @@ class Crud_model extends CI_Model
         return $this->db->get('language_sort');
          
     }
+    //Get all the Languages form Database
+    public function getAllLanguage(){
+         return $this->db->select('*')->get('language_sort')->result_array();
+    }
 
     // Banner
 
@@ -3402,16 +3422,20 @@ class Crud_model extends CI_Model
     }
 
     function get_categories_with_blog_number($limit = 10,$language=''){
-        $query = $this->db
-            ->select("blog_category_id, count(*) AS blog_number",false)
-            ->from ("blogs")
-            ->group_by('blog_category_id')
-            ->order_by("blog_number","DESC")
-            ->where('status', 1)
-            ->where('language', $language)
-            ->limit($limit)
-            ->get();
-        return $query->result_array();
+        try{
+            $query = $this->db
+                ->select("blog_category_id, count(*) AS blog_number",false)
+                ->from ("blogs")
+                ->group_by('blog_category_id')
+                ->order_by("blog_number","DESC")
+                ->where('status', 1)
+                ->where('language', $language)
+                ->limit($limit)
+                ->get();
+            return $query->result_array();
+        }catch(Exception $e){
+
+        }
     }
 
     function get_blog_comments_by_blog_id($blog_id = ""){

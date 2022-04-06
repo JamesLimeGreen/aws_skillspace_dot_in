@@ -14,7 +14,27 @@
 		$bundle_average_ceil_rating = 0;
 	}
 ?>
-
+<style type="text/css">
+	.course_btn1{
+ 	display: inline-block;
+    font-family: OpenSans, arial, "sans-serif";
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 14px;
+    background: #b42b75;
+    box-sizing: border-box;
+    padding: 12px 20px;
+    text-align: center;
+    transition: background 0.3s;
+    min-width: 73px;
+    border-radius: 7px;
+}
+.course_btn1:hover{
+	background: #ad1366;
+	color:white;
+}
+</style>
 
 <div class="position-relative">
   <!-- Hero Section -->
@@ -57,19 +77,15 @@
                 <span class="text-dark font-weight-bold mr-1"><?php echo $bundle_average_ceil_rating; ?></span>
                 <span class="text-muted">(<?= $ratings->num_rows().' '.site_phrase('reviews'); ?>), </span>
               </span>
-              <span class="d-inline-block">
-                <span class="text-dark font-weight-bold ml-2"> <?php echo $this->course_bundle_model->get_number_of_enrolled_student($bundle_details['id']); ?></span>
-                <span class="text-muted"><?= site_phrase('students_enrolled'); ?></span>
-              </span>
               <span class="d-inline-block w-100 mt-2">
               	<div class="p-3 text-center float-right bg-e1eaff">
 	              	<p class="text-15"><?= site_phrase('subscription'); ?> <?= $bundle_details['subscription_limit']; ?> <?= site_phrase('days'); ?></p>
 					<?php if(get_bundle_validity($bundle_details['id'], $this->session->userdata('user_id')) == 'invalid'): ?>
-						<a href="<?= site_url('course_bundles/buy/'.$bundle_details['id']); ?>" class="btn btn-success"><?= currency($bundle_details['price']); ?> | <?= site_phrase('buy'); ?></a>
+						<a href="<?= site_url('course_bundles/buy/'.$bundle_details['id']); ?>" class="btn course_btn1"><?= currency($bundle_details['price']); ?> | <?= site_phrase('buy'); ?></a>
 					<?php elseif(get_bundle_validity($bundle_details['id'], $this->session->userdata('user_id')) == 'expire'): ?>
-						<a href="<?= site_url('course_bundles/buy/'.$bundle_details['id']); ?>" class="btn btn-danger"><?= currency($bundle_details['price']); ?> | <?= site_phrase('renew'); ?></a>
+						<a href="<?= site_url('course_bundles/buy/'.$bundle_details['id']); ?>" class="btn course_btn1"><?= currency($bundle_details['price']); ?> | <?= site_phrase('renew'); ?></a>
 					<?php else: ?>
-						<a href="<?= site_url('home/my_bundles'); ?>" class="btn btn-info"><?= site_phrase('purchased'); ?></a>
+						<a href="<?= site_url('home/my_bundles'); ?>" class="btn course_btn1"><?= site_phrase('purchased'); ?></a>
 					<?php endif; ?>
 				</div>
               </span>
@@ -105,7 +121,7 @@
 
 				<div class="col-md-6 col-lg-4 col-xl-3 p-0">
 					<div class="course-box-wrap m-1 pb-3 pt-2">
-						<div class="course-box course-bundle-box border-left border-right border-bottom">
+						<div class="course-box  border-left border-right border-bottom">
 							<a href="<?php echo site_url('home/course/'.rawurlencode(slugify($course['title'])).'/'.$course['id']); ?>">
 								<div class="course-image">
 									<img class="w-100" src="<?php echo $this->crud_model->get_course_thumbnail_url($course['id']); ?>" alt="" class="img-fluid">
@@ -230,11 +246,11 @@
 		                          </div>
 		                          <div class="d-flex align-items-center min-w-21rem ml-3">
 		                            <ul class="list-inline mr-1 mb-2">
-		                              <?php for($j = 5; $j >= 1; $j--): ?>
-		                                <?php if($i >= $j): ?>
-		                                <li class="list-inline-item mr-1"><img src="<?= base_url('assets/svg/illustrations/star.svg'); ?>" alt="Review rating" width="16"></li>
+		                              <?php for($j = 0; $j < 5; $j++): ?>
+		                                <?php if($j >= $i): ?>
+		                                <li class="list-inline-item mr-1"><img src="<?= base_url('assets/svg/illustrations/star-muted.svg'); ?>" alt="Review rating" width="16"></li>
 		                                <?php else: ?>
-		                                  <li class="list-inline-item mr-1"><img src="<?= base_url('assets/svg/illustrations/star-muted.svg'); ?>" alt="Review rating" width="16"></li>
+		                                  <li class="list-inline-item mr-1"><img src="<?= base_url('assets/svg/illustrations/star.svg'); ?>" alt="Review rating" width="16"></li>
 		                                <?php endif; ?>
 		                              <?php endfor; ?>
 		                            </ul>

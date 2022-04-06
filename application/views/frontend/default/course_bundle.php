@@ -1,8 +1,48 @@
+<style>
+.course_btn2{
+ 	display: inline-block;
+    font-family: OpenSans, arial, "sans-serif";
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 14px;
+    background: #1d2b51;
+    box-sizing: border-box;
+    padding: 12px 20px;
+    text-align: center;
+    transition: background 0.3s;
+    min-width: 120px;
+    border-radius: 7px;
+}
+.course_btn2:hover{
+	background: #1d2b51;
+	color:white;
+}
+.course_btn1{
+ 	display: inline-block;
+    font-family: OpenSans, arial, "sans-serif";
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 14px;
+    background: #b42b75;
+    box-sizing: border-box;
+    padding: 12px 20px;
+    text-align: center;
+    transition: background 0.3s;
+    min-width: 73px;
+    border-radius: 7px;
+}
+.course_btn1:hover{
+	background: #1d2b51;
+	color:white;
+}
+</style>
 <!-- Hero Section -->
-<div class="container space-top-1 p-2">
-	<div class="blue rounded" style="background: url(<?= base_url('assets/svg/illustrations/knowledgebase-community-2.svg'); ?>) right bottom no-repeat;">
-    	<div class="py-4 px-6 m-2">
-      		<h1 class="display-4 text-white"><?php echo site_phrase('course_bundles'); ?></h1>
+<div class="container-fluide ">
+	<div class="blue breadcrumb-container px-6" >
+    	<div class=" px-6 ">
+      		<h1 class="breadcrumb-item display-6 fw-bold"><?php echo site_phrase('course_bundles'); ?></h1>
       		<p class="text-white mb-0">
         		<span class="font-weight-bold"><?php echo count($course_bundles->result_array()); ?> </span><?php echo site_phrase('bundles_on_this_page'); ?>
 			</p>
@@ -10,10 +50,9 @@
 	</div>
 </div>
 
-
 <div class="container mt-5">
 
-	<div class="row mb-8">
+	<div class="row mb-5">
 		<div class="col-sm-12 col-md-6"></div>
 		<div class="col-sm-12 col-md-6">
             <form class="" action="<?= site_url('course_bundles/search/query'); ?>" method="get">
@@ -98,7 +137,7 @@
 			                	<?php endif; ?>
 				            <?php endforeach; ?>
 				          </div>
-				          <div class="row bundle-arrow-down text-center cursor-pointer" id="bundle_arrow_down_<?= $bundle['id']; ?>" onclick="toggleBundleCourses('<?= $bundle['id']; ?>', '<?= count($course_ids); ?>')">
+				          <div class="row bundle-arrow-down text-center cursor-pointer" id="bundle_arrow_down_<?= $bundle['id']; ?>" onclick="toggleBundleCourses('<?= $bundle['id']; ?>', '<?= count($course_ids); ?>')" style="display:none;">
 		                    <div class="col-md-12"><i class="fas fa-angle-down"></i></div>
 		                  </div>
 
@@ -108,27 +147,20 @@
 	                      <!--Here is load more bundle-->
 	                      <div class="row bundle-slider closed" id="course_of_bundle_<?= $bundle['id']; ?>"></div>
 				        </div>
-
 				        <div class="card-footer border-0 pt-0">
 				          <div class="d-flex justify-content-between align-items-center">
-			                <div class="ml-2">
-					            <div class="d-flex align-items-center flex-wrap">
-					              <ul class="list-inline mt-n1 mb-0 mr-2">
-					                <?php for($i = 1; $i < 6; $i++):?>
-					                    <?php if ($i <= $bundle_average_ceil_rating): ?>
-					                      <li class="list-inline-item mx-0">
-					                        <img src="<?= base_url('assets/svg/illustrations/star.svg'); ?>" alt="Review rating" width="14">
-					                      </li>
-					                    <?php else: ?>
-					                        <li class="list-inline-item mx-0">
-					                          <img src="<?= base_url('assets/svg/illustrations/star-muted.svg'); ?>" alt="Review rating" width="14">
-					                        </li>
-					                    <?php endif; ?>
-					                <?php endfor; ?>
-					              </ul>
-								  <span class="text-13">(<?php echo $ratings->num_rows().' '.site_phrase('students'); ?>)</span>
-					            </div>
-					        </div>	
+				          	<div class="mr-2">
+								<a href="<?= site_url('bundle_details/'.$bundle['id'].'/'.slugify($bundle['title'])); ?>" class="course_btn2 w-100 p-2 mb-2"><?= site_phrase('bundle_details'); ?></a>
+							</div>
+							<div class="mr-2">
+							    <?php if(get_bundle_validity($bundle['id'], $this->session->userdata('user_id')) == 'invalid'): ?>
+							        <a href="<?= site_url('course_bundles/buy/'.$bundle['id']); ?>" class="btn course_btn1   w-100 p-2 mb-2"><?= site_phrase('buy'); ?></a>
+							    <?php elseif(get_bundle_validity($bundle['id'], $this->session->userdata('user_id')) == 'expire'): ?>
+							        <a href="<?= site_url('course_bundles/buy/'.$bundle['id']); ?>" class="btn course_btn1  w-100 p-2 mb-2"><?= currency($bundle['price']); ?> | <?= site_phrase('renew'); ?></a>
+							    <?php else: ?>
+							        <a href="<?= site_url('home/my_bundles'); ?>" class="course_btn1 w-100 p-2 mb-2"><?= site_phrase('purchased'); ?></a>
+							    <?php endif; ?>
+							</div>
 				            <div class="mr-2">
 				            	<span class="d-block h5 text-lh-sm mb-0"><?php echo currency($bundle['price']); ?></span>
 								<span class="d-block text-muted text-lh-sm text-13"><del><?php echo currency($total_courses_price); ?></del></span>

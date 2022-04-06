@@ -1,0 +1,13 @@
+User-agent: *
+
+Disallow: /home/handleCartItemForBuyNowButton
+Disallow: /home/rate_course
+Disallow: /home/handleCartItems
+Disallow: /home/refreshWishList
+Disallow: /home/handleWishList
+Disallow: /home/shopping_cart
+Disallow: /home/isLoggedIn
+Disallow: /login/fb_validation_login
+Disallow: /home/my_courses_by_category
+Disallow: /home/instructor_page
+Disallow: /home/compare
