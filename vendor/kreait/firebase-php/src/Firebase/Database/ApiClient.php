@@ -21,6 +21,9 @@ class ApiClient
     private ClientInterface $client;
     protected DatabaseApiExceptionConverter $errorHandler;
 
+    /**
+     * @internal
+     */
     public function __construct(ClientInterface $httpClient)
     {
         $this->client = $httpClient;
@@ -42,6 +45,8 @@ class ApiClient
     }
 
     /**
+     * @internal This method should only be used in the context of Database translations
+     *
      * @param UriInterface|string $uri
      *
      * @throws DatabaseException
@@ -81,6 +86,8 @@ class ApiClient
     }
 
     /**
+     * @internal This method should only be used in the context of Database translations
+     *
      * @param UriInterface|string $uri
      * @param mixed $value
      *
@@ -101,6 +108,8 @@ class ApiClient
     }
 
     /**
+     * @internal This method should only be used in the context of Database translations
+     *
      * @param UriInterface|string $uri
      *
      * @throws DatabaseException

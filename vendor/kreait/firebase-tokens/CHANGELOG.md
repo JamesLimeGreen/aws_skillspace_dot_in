@@ -1,47 +1,5 @@
 # CHANGELOG
 
-## Unreleased
-
-## 2.3.0 - 2022-04-16
-
-* Removed `firebase/php-jwt` dev dependency and simplified test token generation.
-* Added support for verifying tokens returned from the Auth Emulator.
-
-## 2.2.0 - 2022-01-28
-
-Added tenant support to Session Cookie Verification. It doesn't seem to be supported at the moment
-(executing it with a tenant-enabled Firebase project yields an `UNSUPPORTED_TENANT_OPERATION`)
-error, but once it _is_ supported, this library will need no or just minimal updates.
-
-The [Firebase Admin SDK for PHP](https://github.com/kreait/firebase-php) has integration tests 
-checking for this error so that we know early on when it starts working.
-
-## 2.1.1 - 2022-01-28
-
-Fixed method name `Kreait\Firebase\JWT\SessionCookieVerifier::sessionCookieWithLeeway` to
-`Kreait\Firebase\JWT\SessionCookieVerifier::verifySessionCookieWithLeeway` 🤦‍. This is technically
-a breaking change, but since 2.1.0 was released just a few minutes ago, it was most certainly not
-used yet.
-
-## 2.1.0 - 2022-01-28
-
-Added `Kreait\Firebase\JWT\SessionCookieVerifier` that works similarly as the existing ID Token verifier.
-You can find its documentation in the README.
-
-## 2.0.1 - 2022-01-03
-
-Fixed failing ID token verification when the `nbf` claim is not present.
-
-## 2.0.0 - 2022-01-03
-
-After updating, please refer to the [Migration Documentation](MIGRATE-1.x-to-2.0.md) to be ready for the 2.0 release of this library.
-
-* Removed `Firebase\Auth` namespace
-* Ensured compatibility with PHP 8.1 by adding it to the test matrix.
-* Dropped support for `lcobucci/jwt` <4.1
-* Dropped support for `guzzlehttp/guzzle` <7.0
-* Dropped direct support for `psr/simple-cache`
-
 ## 1.16.1 - 2021-10-03
 
 Update [lcobucci/jwt](https://github.com/lcobucci/jwt) version constraint to `^3.4.6|^4.0.4|^4.1.5` to prevent misuse

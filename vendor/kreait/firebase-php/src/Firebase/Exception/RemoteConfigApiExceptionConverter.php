@@ -18,6 +18,9 @@ class RemoteConfigApiExceptionConverter
 {
     private ErrorResponseParser $responseParser;
 
+    /**
+     * @internal
+     */
     public function __construct()
     {
         $this->responseParser = new ErrorResponseParser();

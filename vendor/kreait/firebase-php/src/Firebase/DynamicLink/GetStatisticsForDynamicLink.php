@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase\DynamicLink;
 
+use Kreait\Firebase\DynamicLink;
 use Kreait\Firebase\Value\Url;
+use Psr\Http\Message\UriInterface;
 
 final class GetStatisticsForDynamicLink
 {
@@ -19,7 +21,7 @@ final class GetStatisticsForDynamicLink
     }
 
     /**
-     * @param \Stringable|string $link
+     * @param Url|UriInterface|string|DynamicLink|mixed $link
      */
     public static function forLink($link): self
     {

@@ -33,9 +33,6 @@ final class MulticastSendReport implements Countable
         return $report;
     }
 
-    /**
-     * @internal
-     */
     public static function fromRequestsAndResponses(Requests $requests, Responses $responses): self
     {
         $reports = [];
@@ -90,6 +87,17 @@ final class MulticastSendReport implements Countable
         }
 
         return self::withItems($reports);
+    }
+
+    /**
+     * @deprecated 5.14.0
+     */
+    public function withAdded(SendReport $report): self
+    {
+        $new = clone $this;
+        $new->items[] = $report;
+
+        return $new;
     }
 
     /**

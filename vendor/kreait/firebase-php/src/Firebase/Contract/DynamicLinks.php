@@ -12,11 +12,13 @@ use Kreait\Firebase\DynamicLink\DynamicLinkStatistics;
 use Kreait\Firebase\DynamicLink\GetStatisticsForDynamicLink;
 use Kreait\Firebase\DynamicLink\ShortenLongDynamicLink;
 use Kreait\Firebase\DynamicLink\ShortenLongDynamicLink\FailedToShortenLongDynamicLink;
+use Kreait\Firebase\Value\Url;
+use Psr\Http\Message\UriInterface;
 
 interface DynamicLinks
 {
     /**
-     * @param \Stringable|string|CreateDynamicLink|array<string, array<string, string>> $url
+     * @param string|Url|UriInterface|CreateDynamicLink|array|mixed $url
      *
      * @throws InvalidArgumentException
      * @throws FailedToCreateDynamicLink
@@ -24,7 +26,7 @@ interface DynamicLinks
     public function createUnguessableLink($url): DynamicLink;
 
     /**
-     * @param \Stringable|string|CreateDynamicLink|array<string, array<string, string>> $url
+     * @param string|Url|UriInterface|CreateDynamicLink|array|mixed $url
      *
      * @throws InvalidArgumentException
      * @throws FailedToCreateDynamicLink
@@ -32,7 +34,7 @@ interface DynamicLinks
     public function createShortLink($url): DynamicLink;
 
     /**
-     * @param \Stringable|string|CreateDynamicLink|array<string, array<string, string>> $actionOrParametersOrUrl
+     * @param string|Url|UriInterface|CreateDynamicLink|array|mixed $actionOrParametersOrUrl
      *
      * @throws InvalidArgumentException
      * @throws FailedToCreateDynamicLink
@@ -40,7 +42,7 @@ interface DynamicLinks
     public function createDynamicLink($actionOrParametersOrUrl, ?string $suffixType = null): DynamicLink;
 
     /**
-     * @param \Stringable|string|ShortenLongDynamicLink|array<string, array<string, string>> $longDynamicLinkOrAction
+     * @param string|Url|UriInterface|ShortenLongDynamicLink|array|mixed $longDynamicLinkOrAction
      *
      * @throws InvalidArgumentException
      * @throws FailedToShortenLongDynamicLink
@@ -48,7 +50,7 @@ interface DynamicLinks
     public function shortenLongDynamicLink($longDynamicLinkOrAction, ?string $suffixType = null): DynamicLink;
 
     /**
-     * @param \Stringable|string|GetStatisticsForDynamicLink $dynamicLinkOrAction
+     * @param string|Url|UriInterface|GetStatisticsForDynamicLink|mixed $dynamicLinkOrAction
      *
      * @throws InvalidArgumentException
      * @throws GetStatisticsForDynamicLink\FailedToGetStatisticsForDynamicLink

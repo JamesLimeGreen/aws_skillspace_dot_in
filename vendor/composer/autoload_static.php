@@ -12,8 +12,7 @@ class ComposerStaticInit634e615ad52ebfa399832a351d93b2d2
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
-        'f4a5cb38eba0d7987c96dc4c07da6291' => __DIR__ . '/..' . '/beste/clock/src/psr-polyfill.php',
-        '1232758e40b1d31bb295b6907de02c63' => __DIR__ . '/..' . '/beste/clock/src/Clock.php',
+        '27592325262b385204a263c2ab632d6e' => __DIR__ . '/..' . '/kreait/clock/src/Clock.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
@@ -38,6 +37,7 @@ class ComposerStaticInit634e615ad52ebfa399832a351d93b2d2
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
@@ -56,6 +56,7 @@ class ComposerStaticInit634e615ad52ebfa399832a351d93b2d2
         array (
             'Kreait\\Firebase\\JWT\\' => 20,
             'Kreait\\Firebase\\' => 16,
+            'Kreait\\Clock\\' => 13,
         ),
         'J' => 
         array (
@@ -74,16 +75,13 @@ class ComposerStaticInit634e615ad52ebfa399832a351d93b2d2
         'F' => 
         array (
             'Firebase\\JWT\\' => 13,
+            'Firebase\\Auth\\Token\\' => 20,
             'Fig\\Http\\Message\\' => 17,
         ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
-        ),
-        'B' => 
-        array (
-            'Beste\\Clock\\' => 12,
         ),
     );
 
@@ -119,6 +117,10 @@ class ComposerStaticInit634e615ad52ebfa399832a351d93b2d2
         'Riverline\\MultiPartParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/riverline/multipart-parser/src',
+        ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
         ),
         'Psr\\Log\\' => 
         array (
@@ -157,6 +159,10 @@ class ComposerStaticInit634e615ad52ebfa399832a351d93b2d2
         array (
             0 => __DIR__ . '/..' . '/kreait/firebase-php/src/Firebase',
         ),
+        'Kreait\\Clock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kreait/clock/src/Clock',
+        ),
         'JmesPath\\' => 
         array (
             0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
@@ -193,6 +199,10 @@ class ComposerStaticInit634e615ad52ebfa399832a351d93b2d2
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
+        'Firebase\\Auth\\Token\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kreait/firebase-tokens/src/Firebase/Auth/Token',
+        ),
         'Fig\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/fig/http-message-util/src',
@@ -204,10 +214,6 @@ class ComposerStaticInit634e615ad52ebfa399832a351d93b2d2
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
-        ),
-        'Beste\\Clock\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/beste/clock/src/Clock',
         ),
     );
 

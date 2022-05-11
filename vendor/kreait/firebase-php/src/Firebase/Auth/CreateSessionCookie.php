@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase\Auth;
 
-use Beste\Clock\SystemClock;
 use DateInterval;
+use Kreait\Clock;
 use Kreait\Firebase\Exception\InvalidArgumentException;
 use Lcobucci\JWT\Token;
-use Psr\Clock\ClockInterface;
 
 final class CreateSessionCookie
 {
@@ -17,9 +16,9 @@ final class CreateSessionCookie
 
     private string $idToken;
     private DateInterval $ttl;
-    private ClockInterface $clock;
+    private Clock $clock;
 
-    private function __construct(string $idToken, DateInterval $ttl, ClockInterface $clock)
+    private function __construct(string $idToken, DateInterval $ttl, Clock $clock)
     {
         $this->idToken = $idToken;
         $this->ttl = $ttl;
@@ -30,9 +29,9 @@ final class CreateSessionCookie
      * @param Token|string $idToken
      * @param int|DateInterval $ttl
      */
-    public static function forIdToken($idToken, $ttl, ?ClockInterface $clock = null): self
+    public static function forIdToken($idToken, $ttl, ?Clock $clock = null): self
     {
-        $clock ??= SystemClock::create();
+        $clock ??= new Clock\SystemClock();
 
         if ($idToken instanceof Token) {
             $idToken = $idToken->toString();
@@ -65,7 +64,7 @@ final class CreateSessionCookie
      *
      * @throws InvalidArgumentException
      */
-    private static function assertValidDuration($ttl, ClockInterface $clock): DateInterval
+    private static function assertValidDuration($ttl, Clock $clock): DateInterval
     {
         if (\is_int($ttl)) {
             if ($ttl < 0) {

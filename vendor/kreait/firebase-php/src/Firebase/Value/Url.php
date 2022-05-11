@@ -9,20 +9,20 @@ use Kreait\Firebase\Exception\InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Throwable;
 
-/**
- * @internal
- */
-final class Url implements \JsonSerializable
+class Url implements \JsonSerializable
 {
     private UriInterface $value;
 
+    /**
+     * @internal
+     */
     public function __construct(UriInterface $value)
     {
         $this->value = $value;
     }
 
     /**
-     * @param \Stringable|string $value
+     * @param string|Url|UriInterface|mixed $value
      *
      * @throws InvalidArgumentException
      */
@@ -32,11 +32,19 @@ final class Url implements \JsonSerializable
             return new self($value);
         }
 
-        try {
-            return new self(new Uri((string) $value));
-        } catch (Throwable $e) {
-            throw new InvalidArgumentException($e->getMessage());
+        if ($value instanceof self) {
+            return new self($value->toUri());
         }
+
+        if (\is_string($value)) {
+            try {
+                return new self(new Uri($value));
+            } catch (Throwable $e) {
+                throw new InvalidArgumentException($e->getMessage());
+            }
+        }
+
+        throw new InvalidArgumentException('Unable to parse given value to an URL');
     }
 
     public function toUri(): UriInterface
@@ -55,7 +63,7 @@ final class Url implements \JsonSerializable
     }
 
     /**
-     * @param \Stringable|string $other
+     * @param self|string $other
      */
     public function equalsTo($other): bool
     {

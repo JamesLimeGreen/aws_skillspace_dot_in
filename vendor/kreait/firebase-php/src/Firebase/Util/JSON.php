@@ -7,15 +7,14 @@ namespace Kreait\Firebase\Util;
 use Kreait\Firebase\Exception\InvalidArgumentException;
 use Throwable;
 
-/**
- * @internal
- */
-final class JSON
+class JSON
 {
     /**
      * Wrapper for JSON encoding that throws when an error occurs.
      *
      * Shamelessly copied from Guzzle.
+     *
+     * @internal
      *
      * @see \GuzzleHttp\json_encode()
      *
@@ -41,6 +40,8 @@ final class JSON
      * Wrapper for json_decode that throws when an error occurs.
      *
      * Shamelessly copied from Guzzle.
+     *
+     * @internal
      *
      * @see \GuzzleHttp\json_encode()
      *
@@ -69,6 +70,8 @@ final class JSON
     /**
      * Returns true if the given value is a valid JSON string.
      *
+     * @internal
+     *
      * @param mixed $value
      */
     public static function isValid($value): bool
@@ -83,6 +86,8 @@ final class JSON
     }
 
     /**
+     * @internal
+     *
      * @param mixed $value
      */
     public static function prettyPrint($value): string

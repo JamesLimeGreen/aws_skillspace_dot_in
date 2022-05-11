@@ -23,11 +23,14 @@ use Throwable;
 class ApiClient
 {
     private ClientInterface $client;
-    private ?string $tenantId;
+    private ?TenantId $tenantId;
 
     private AuthApiExceptionConverter $errorHandler;
 
-    public function __construct(ClientInterface $client, ?string $tenantId = null)
+    /**
+     * @internal
+     */
+    public function __construct(ClientInterface $client, ?TenantId $tenantId = null)
     {
         $this->client = $client;
         $this->tenantId = $tenantId;
@@ -59,7 +62,7 @@ class ApiClient
     {
         return $this->requestApi('https://identitytoolkit.googleapis.com/v1/accounts:update', [
             'localId' => $uid,
-            'customAttributes' => JSON::encode($claims, JSON_FORCE_OBJECT),
+            'customAttributes' => JSON::encode((object) $claims),
         ]);
     }
 
@@ -209,9 +212,11 @@ class ApiClient
     private function requestApi(string $uri, array $data): ResponseInterface
     {
         $options = [];
+        $tenantId = $data['tenantId'] ?? $this->tenantId ?? null;
+        $tenantId = $tenantId instanceof TenantId ? $tenantId->toString() : $tenantId;
 
-        if ($this->tenantId !== null) {
-            $data['tenantId'] = $this->tenantId;
+        if ($tenantId) {
+            $data['tenantId'] = $tenantId;
         }
 
         if (!empty($data)) {

@@ -11,9 +11,6 @@ use Riverline\MultiPartParser\Converters\PSR7;
 use Riverline\MultiPartParser\StreamedPart;
 use Throwable;
 
-/**
- * @internal
- */
 final class ResponseWithSubResponses implements HasSubResponses, ResponseInterface
 {
     use WrappedPsr7Response;

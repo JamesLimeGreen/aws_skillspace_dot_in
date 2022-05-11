@@ -8,7 +8,7 @@ final class SignInWithCustomToken implements IsTenantAware, SignIn
 {
     private string $customToken;
 
-    private ?string $tenantId = null;
+    private ?TenantId $tenantId = null;
 
     private function __construct(string $customToken)
     {
@@ -20,7 +20,7 @@ final class SignInWithCustomToken implements IsTenantAware, SignIn
         return new self($customToken);
     }
 
-    public function withTenantId(string $tenantId): self
+    public function withTenantId(TenantId $tenantId): self
     {
         $action = clone $this;
         $action->tenantId = $tenantId;
@@ -33,7 +33,7 @@ final class SignInWithCustomToken implements IsTenantAware, SignIn
         return $this->customToken;
     }
 
-    public function tenantId(): ?string
+    public function tenantId(): ?TenantId
     {
         return $this->tenantId;
     }

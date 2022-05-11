@@ -9,7 +9,6 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
- * @internal
  * @codeCoverageIgnore
  */
 trait WrappedPsr7Request

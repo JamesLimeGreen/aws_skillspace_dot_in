@@ -8,7 +8,7 @@ final class SignInWithEmailAndOobCode implements IsTenantAware, SignIn
 {
     private string $email;
     private string $oobCode;
-    private ?string $tenantId = null;
+    private ?TenantId $tenantId = null;
 
     private function __construct(string $email, string $oobCode)
     {
@@ -21,7 +21,7 @@ final class SignInWithEmailAndOobCode implements IsTenantAware, SignIn
         return new self($email, $oobCode);
     }
 
-    public function withTenantId(string $tenantId): self
+    public function withTenantId(TenantId $tenantId): self
     {
         $action = clone $this;
         $action->tenantId = $tenantId;
@@ -39,7 +39,7 @@ final class SignInWithEmailAndOobCode implements IsTenantAware, SignIn
         return $this->oobCode;
     }
 
-    public function tenantId(): ?string
+    public function tenantId(): ?TenantId
     {
         return $this->tenantId;
     }

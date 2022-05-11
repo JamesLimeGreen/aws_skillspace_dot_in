@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase\Exception;
 
-use Beste\Clock\SystemClock;
 use DateTimeImmutable;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use Kreait\Clock;
+use Kreait\Clock\SystemClock;
 use Kreait\Firebase\Exception\Messaging\ApiConnectionFailed;
 use Kreait\Firebase\Exception\Messaging\AuthenticationError;
 use Kreait\Firebase\Exception\Messaging\InvalidMessage;
@@ -16,8 +18,6 @@ use Kreait\Firebase\Exception\Messaging\QuotaExceeded;
 use Kreait\Firebase\Exception\Messaging\ServerError;
 use Kreait\Firebase\Exception\Messaging\ServerUnavailable;
 use Kreait\Firebase\Http\ErrorResponseParser;
-use Psr\Clock\ClockInterface;
-use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
@@ -28,12 +28,15 @@ class MessagingApiExceptionConverter
 {
     private ErrorResponseParser $responseParser;
 
-    private ClockInterface $clock;
+    private Clock $clock;
 
-    public function __construct(?ClockInterface $clock = null)
+    /**
+     * @internal
+     */
+    public function __construct(?Clock $clock = null)
     {
         $this->responseParser = new ErrorResponseParser();
-        $this->clock = $clock ?? SystemClock::create();
+        $this->clock = $clock ?? new SystemClock();
     }
 
     /**
@@ -41,11 +44,12 @@ class MessagingApiExceptionConverter
      */
     public function convertException(Throwable $exception): FirebaseException
     {
-        if ($exception instanceof RequestException) {
+        // @phpstan-ignore-next-line
+        if ($exception instanceof RequestException && !($exception instanceof ConnectException)) {
             return $this->convertGuzzleRequestException($exception);
         }
 
-        if ($exception instanceof NetworkExceptionInterface) {
+        if ($exception instanceof ConnectException) {
             return new ApiConnectionFailed('Unable to connect to the API: '.$exception->getMessage(), $exception->getCode(), $exception);
         }
 

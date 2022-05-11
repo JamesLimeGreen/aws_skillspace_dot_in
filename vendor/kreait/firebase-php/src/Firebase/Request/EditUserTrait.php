@@ -7,6 +7,7 @@ namespace Kreait\Firebase\Request;
 use Kreait\Firebase\Exception\InvalidArgumentException;
 use Kreait\Firebase\Value\ClearTextPassword;
 use Kreait\Firebase\Value\Email;
+use Kreait\Firebase\Value\PhoneNumber;
 use Kreait\Firebase\Value\Uid;
 use Kreait\Firebase\Value\Url;
 
@@ -16,15 +17,15 @@ use Kreait\Firebase\Value\Url;
  */
 trait EditUserTrait
 {
-    protected ?string $uid = null;
-    protected ?string $email = null;
+    protected ?Uid $uid = null;
+    protected ?Email $email = null;
     protected ?string $displayName = null;
     protected ?bool $emailIsVerified = null;
-    protected ?string $phoneNumber = null;
-    protected ?string $photoUrl = null;
+    protected ?PhoneNumber $phoneNumber = null;
+    protected ?Url $photoUrl = null;
     protected ?bool $markAsEnabled = null;
     protected ?bool $markAsDisabled = null;
-    protected ?string $clearTextPassword = null;
+    protected ?ClearTextPassword $clearTextPassword = null;
 
     /**
      * @param T $request
@@ -109,46 +110,46 @@ trait EditUserTrait
     }
 
     /**
-     * @param \Stringable|mixed $uid
+     * @param Uid|mixed $uid
      */
     public function withUid($uid): self
     {
         $request = clone $this;
-        $request->uid = (string) (new Uid((string) $uid));
+        $request->uid = $uid instanceof Uid ? $uid : new Uid((string) $uid);
 
         return $request;
     }
 
     /**
-     * @param \Stringable|string $email
+     * @param Email|string $email
      */
     public function withEmail($email): self
     {
         $request = clone $this;
-        $request->email = (string) (new Email((string) $email));
+        $request->email = $email instanceof Email ? $email : new Email($email);
 
         return $request;
     }
 
     /**
-     * @param \Stringable|string $email
+     * @param Email|string $email
      */
     public function withVerifiedEmail($email): self
     {
         $request = clone $this;
-        $request->email = (string) (new Email((string) $email));
+        $request->email = $email instanceof Email ? $email : new Email($email);
         $request->emailIsVerified = true;
 
         return $request;
     }
 
     /**
-     * @param \Stringable|string $email
+     * @param Email|string $email
      */
     public function withUnverifiedEmail($email): self
     {
         $request = clone $this;
-        $request->email = (string) (new Email((string) $email));
+        $request->email = $email instanceof Email ? $email : new Email($email);
         $request->emailIsVerified = false;
 
         return $request;
@@ -163,11 +164,13 @@ trait EditUserTrait
     }
 
     /**
-     * @param \Stringable|string|null $phoneNumber
+     * @param PhoneNumber|string|null $phoneNumber
      */
     public function withPhoneNumber($phoneNumber): self
     {
-        $phoneNumber = $phoneNumber !== null ? (string) $phoneNumber : null;
+        $phoneNumber = $phoneNumber !== null
+            ? new PhoneNumber((string) $phoneNumber)
+            : null;
 
         $request = clone $this;
         $request->phoneNumber = $phoneNumber;
@@ -176,12 +179,12 @@ trait EditUserTrait
     }
 
     /**
-     * @param \Stringable|string $url
+     * @param Url|string $url
      */
     public function withPhotoUrl($url): self
     {
         $request = clone $this;
-        $request->photoUrl = (string) Url::fromValue((string) $url);
+        $request->photoUrl = $url instanceof Url ? $url : Url::fromValue($url);
 
         return $request;
     }
@@ -221,12 +224,14 @@ trait EditUserTrait
     }
 
     /**
-     * @param \Stringable|string $clearTextPassword
+     * @param ClearTextPassword|string $clearTextPassword
      */
     public function withClearTextPassword($clearTextPassword): self
     {
         $request = clone $this;
-        $request->clearTextPassword = (string) (new ClearTextPassword((string) $clearTextPassword));
+        $request->clearTextPassword = $clearTextPassword instanceof ClearTextPassword
+            ? $clearTextPassword
+            : new ClearTextPassword($clearTextPassword);
 
         return $request;
     }

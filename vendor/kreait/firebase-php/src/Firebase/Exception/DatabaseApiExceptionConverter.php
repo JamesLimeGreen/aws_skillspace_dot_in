@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase\Exception;
 
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Kreait\Firebase\Exception\Database\ApiConnectionFailed;
 use Kreait\Firebase\Exception\Database\DatabaseError;
 use Kreait\Firebase\Http\ErrorResponseParser;
-use Psr\Http\Client\NetworkExceptionInterface;
 use Throwable;
 
 /**
@@ -18,6 +18,9 @@ class DatabaseApiExceptionConverter
 {
     private ErrorResponseParser $responseParser;
 
+    /**
+     * @internal
+     */
     public function __construct()
     {
         $this->responseParser = new ErrorResponseParser();
@@ -25,11 +28,12 @@ class DatabaseApiExceptionConverter
 
     public function convertException(Throwable $exception): DatabaseException
     {
-        if ($exception instanceof RequestException) {
+        // @phpstan-ignore-next-line
+        if ($exception instanceof RequestException && !($exception instanceof ConnectException)) {
             return $this->convertGuzzleRequestException($exception);
         }
 
-        if ($exception instanceof NetworkExceptionInterface) {
+        if ($exception instanceof ConnectException) {
             return new ApiConnectionFailed('Unable to connect to the API: '.$exception->getMessage(), $exception->getCode(), $exception);
         }
 

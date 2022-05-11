@@ -20,6 +20,9 @@ class ApiClient
     private ClientInterface $client;
     private RemoteConfigApiExceptionConverter $errorHandler;
 
+    /**
+     * @internal
+     */
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;

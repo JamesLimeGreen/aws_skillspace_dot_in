@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kreait\Firebase\Auth;
 
+use Firebase\Auth\Token\Domain\Generator;
 use GuzzleHttp\ClientInterface;
 use InvalidArgumentException;
 use Kreait\Firebase\Exception\Auth\AuthError;
@@ -12,14 +13,12 @@ use Kreait\Firebase\Exception\AuthException;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Util\DT;
 use Kreait\Firebase\Util\JSON;
+use Kreait\Firebase\Value\Uid;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token;
 use Throwable;
 
-/**
- * @internal
- */
-final class CustomTokenViaGoogleIam
+class CustomTokenViaGoogleIam implements Generator
 {
     private string $clientEmail;
 
@@ -27,9 +26,9 @@ final class CustomTokenViaGoogleIam
 
     private Configuration $config;
 
-    private ?string $tenantId;
+    private ?TenantId $tenantId;
 
-    public function __construct(string $clientEmail, ClientInterface $client, ?string $tenantId = null)
+    public function __construct(string $clientEmail, ClientInterface $client, ?TenantId $tenantId = null)
     {
         $this->clientEmail = $clientEmail;
         $this->client = $client;
@@ -39,7 +38,7 @@ final class CustomTokenViaGoogleIam
     }
 
     /**
-     * @param \Stringable|string$uid
+     * @param Uid|string$uid
      * @param array<string, mixed> $claims
      *
      * @throws AuthException
@@ -62,7 +61,7 @@ final class CustomTokenViaGoogleIam
         ;
 
         if ($this->tenantId !== null) {
-            $builder->withClaim('tenantId', $this->tenantId);
+            $builder->withClaim('tenantId', $this->tenantId->toString());
         }
 
         if (!empty($claims)) {

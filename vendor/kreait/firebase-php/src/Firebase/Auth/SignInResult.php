@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kreait\Firebase\Auth;
 
 use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\UnencryptedToken;
+use Lcobucci\JWT\Token\Plain;
 
 final class SignInResult
 {
@@ -59,13 +59,22 @@ final class SignInResult
 
         if ($this->idToken) {
             $idToken = $this->config->parser()->parse($this->idToken);
-            \assert($idToken instanceof UnencryptedToken);
+
+            // @codeCoverageIgnoreStart
+            if (!($idToken instanceof Plain)) {
+                return null;
+            }
+            // @codeCoverageIgnoreEnd
 
             foreach (['sub', 'localId', 'user_id'] as $claim) {
                 if ($uid = $idToken->claims()->get($claim, false)) {
                     return $this->firebaseUserId = $uid;
                 }
             }
+        }
+
+        if ($localId = $this->data['localId'] ?? null) {
+            return $this->firebaseUserId = $localId;
         }
 
         return null;
@@ -79,7 +88,10 @@ final class SignInResult
 
         if ($this->idToken) {
             $idToken = $this->config->parser()->parse($this->idToken);
-            \assert($idToken instanceof UnencryptedToken);
+
+            if (!($idToken instanceof Plain)) {
+                return null;
+            }
 
             $firebaseClaims = $idToken->claims()->get('firebase', new \stdClass());
 

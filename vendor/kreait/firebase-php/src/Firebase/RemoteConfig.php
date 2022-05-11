@@ -14,13 +14,13 @@ use Kreait\Firebase\Util\JSON;
 use Psr\Http\Message\ResponseInterface;
 use Traversable;
 
-/**
- * @internal
- */
-final class RemoteConfig implements Contract\RemoteConfig
+class RemoteConfig implements Contract\RemoteConfig
 {
     private ApiClient $client;
 
+    /**
+     * @internal
+     */
     public function __construct(ApiClient $client)
     {
         $this->client = $client;

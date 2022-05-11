@@ -11,30 +11,17 @@ use Throwable;
 /**
  * @internal
  */
-final class ServiceAccount
+class ServiceAccount
 {
     /**
      * @var array{
-     *     project_id?: string,
-     *     client_email?: string,
-     *     private_key?: string,
-     *     type: string
-     * }
+     *     project_id: string|null,
+     *     client_email: string|null,
+     *     private_key: string|null,
+     *     type?: string|null
+     * }|array<string, string|null> $data
      */
-    private array $data;
-
-    /**
-     * @phpstan-param array{
-     *     project_id?: string,
-     *     client_email?: string,
-     *     private_key?: string,
-     *     type: string
-     * } $data
-     */
-    private function __construct(array $data)
-    {
-        $this->data = $data;
-    }
+    private array $data = [];
 
     public function getProjectId(): string
     {
@@ -53,15 +40,18 @@ final class ServiceAccount
 
     /**
      * @return array{
-     *     project_id?: string,
-     *     client_email?: string,
-     *     private_key?: string,
-     *     type: string
-     * }
+     *     project_id: string|null,
+     *     client_email: string|null,
+     *     private_key: string|null,
+     *     type: string|null
+     * }|array<string, string|null>
      */
     public function asArray(): array
     {
-        return $this->data;
+        $array = $this->data;
+        $array['type'] ??= 'service_account';
+
+        return $array;
     }
 
     /**
@@ -103,7 +93,9 @@ final class ServiceAccount
      */
     private static function fromArray(array $data): self
     {
-        if (!\array_key_exists('type', $data) || $data['type'] !== 'service_account') {
+        $type = $data['type'] ?? '';
+
+        if ($type !== 'service_account') {
             throw new InvalidArgumentException(
                 'A Service Account specification must have a field "type" with "service_account" as its value.'
                 .' Please make sure you download the Service Account JSON file from the Service Accounts tab'
@@ -112,7 +104,10 @@ final class ServiceAccount
             );
         }
 
-        return new self($data);
+        $serviceAccount = new self();
+        $serviceAccount->data = $data;
+
+        return $serviceAccount;
     }
 
     private static function fromJson(string $json): self

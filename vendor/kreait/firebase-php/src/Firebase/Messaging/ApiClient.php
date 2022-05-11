@@ -21,6 +21,9 @@ class ApiClient
     private ClientInterface $client;
     private MessagingApiExceptionConverter $errorHandler;
 
+    /**
+     * @internal
+     */
     public function __construct(ClientInterface $client, MessagingApiExceptionConverter $errorHandler)
     {
         $this->client = $client;
@@ -36,7 +39,7 @@ class ApiClient
     public function send(RequestInterface $request, array $options = []): ResponseInterface
     {
         try {
-            return $this->client->send($request, $options);
+            return $this->client->send($request);
         } catch (Throwable $e) {
             throw $this->errorHandler->convertException($e);
         }

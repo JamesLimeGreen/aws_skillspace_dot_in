@@ -6,20 +6,11 @@
     'aliases' => 
     array (
     ),
-    'reference' => '23de389c2b28f5fda261420f094d2e3aa40ff4eb',
+    'reference' => '086e5c6652db29602587c06d66b19f685cb9b813',
     'name' => 'codeigniter/framework',
   ),
   'versions' => 
   array (
-    'beste/clock' => 
-    array (
-      'pretty_version' => '1.0.0',
-      'version' => '1.0.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '10c02d2b49809168903a6b2e15f5001001972a2e',
-    ),
     'codeigniter/framework' => 
     array (
       'pretty_version' => 'dev-main',
@@ -27,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '23de389c2b28f5fda261420f094d2e3aa40ff4eb',
+      'reference' => '086e5c6652db29602587c06d66b19f685cb9b813',
     ),
     'doctrine/instantiator' => 
     array (
@@ -119,23 +110,32 @@
       ),
       'reference' => 'c94a94f120803a18554c1805ef2e539f8285f9a2',
     ),
-    'kreait/firebase-php' => 
+    'kreait/clock' => 
     array (
-      'pretty_version' => '6.0.0',
-      'version' => '6.0.0.0',
+      'pretty_version' => '1.2',
+      'version' => '1.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'daac8ffa0a597f55685f1b042907c1dc32807032',
+      'reference' => '49e103382ca36cb2bc2e86ff3b8d11d44d0e0b31',
+    ),
+    'kreait/firebase-php' => 
+    array (
+      'pretty_version' => '5.26.2',
+      'version' => '5.26.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'da0e60f299eb591d5de741b51edb9350a40a8a6b',
     ),
     'kreait/firebase-tokens' => 
     array (
-      'pretty_version' => '2.3.0',
-      'version' => '2.3.0.0',
+      'pretty_version' => '1.16.1',
+      'version' => '1.16.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a672fa738779cad4b5a1b3c4a6e8ed733ceb9922',
+      'reference' => '595ad06cb5f75c188d8fbfdefc9078c3ec8aa5e8',
     ),
     'lcobucci/clock' => 
     array (
@@ -166,12 +166,12 @@
     ),
     'monolog/monolog' => 
     array (
-      'pretty_version' => '2.5.0',
-      'version' => '2.5.0.0',
+      'pretty_version' => '2.6.0',
+      'version' => '2.6.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '4192345e260f1d51b365536199744b987e160edc',
+      'reference' => '247918972acd74356b0a91dfaa5adcaec069b6c0',
     ),
     'mtdowling/jmespath.php' => 
     array (
@@ -281,13 +281,6 @@
       ),
       'reference' => 'aa5030cfa5405eccfdcb1083ce040c2cb8d253bf',
     ),
-    'psr/clock-implementation' => 
-    array (
-      'provided' => 
-      array (
-        0 => '1.0',
-      ),
-    ),
     'psr/http-client' => 
     array (
       'pretty_version' => '1.0.1',
@@ -351,6 +344,15 @@
       array (
         0 => '1.0.0 || 2.0.0 || 3.0.0',
       ),
+    ),
+    'psr/simple-cache' => 
+    array (
+      'pretty_version' => '1.0.1',
+      'version' => '1.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '408d5eafb83c57f6365a3ca330ff23aa4a5fa39b',
     ),
     'ralouphie/getallheaders' => 
     array (

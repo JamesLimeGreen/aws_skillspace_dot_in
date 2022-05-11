@@ -10,9 +10,6 @@ use Kreait\Firebase\JWT\Contract\ExpirableTrait;
 use Kreait\Firebase\JWT\Contract\Keys;
 use Kreait\Firebase\JWT\Contract\KeysTrait;
 
-/**
- * @internal
- */
 final class ExpiringKeys implements Expirable, Keys
 {
     use KeysTrait;

@@ -10,7 +10,8 @@ final class VerifyIdToken
 {
     private string $token = '';
 
-    private int $leewayInSeconds = 0;
+    /** @var int */
+    private $leewayInSeconds = 0;
 
     private ?string $expectedTenantId = null;
 
@@ -51,7 +52,10 @@ final class VerifyIdToken
         return $this->token;
     }
 
-    public function expectedTenantId(): ?string
+    /**
+     * @return string|null
+     */
+    public function expectedTenantId()
     {
         return $this->expectedTenantId;
     }

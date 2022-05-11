@@ -8,7 +8,7 @@ final class SignInWithEmailAndPassword implements IsTenantAware, SignIn
 {
     private string $email;
     private string $clearTextPassword;
-    private ?string $tenantId = null;
+    private ?TenantId $tenantId = null;
 
     private function __construct(string $email, string $clearTextPassword)
     {
@@ -31,7 +31,7 @@ final class SignInWithEmailAndPassword implements IsTenantAware, SignIn
         return $this->clearTextPassword;
     }
 
-    public function withTenantId(string $tenantId): self
+    public function withTenantId(TenantId $tenantId): self
     {
         $action = clone $this;
         $action->tenantId = $tenantId;
@@ -39,7 +39,7 @@ final class SignInWithEmailAndPassword implements IsTenantAware, SignIn
         return $action;
     }
 
-    public function tenantId(): ?string
+    public function tenantId(): ?TenantId
     {
         return $this->tenantId;
     }

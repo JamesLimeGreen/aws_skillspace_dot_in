@@ -9,7 +9,6 @@ use Psr\Http\Message\ResponseInterface;
 use Traversable;
 
 /**
- * @internal
  * @implements IteratorAggregate<ResponseInterface>
  */
 final class Responses implements IteratorAggregate

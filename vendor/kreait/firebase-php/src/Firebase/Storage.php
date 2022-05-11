@@ -8,10 +8,7 @@ use Google\Cloud\Storage\Bucket;
 use Google\Cloud\Storage\StorageClient;
 use Kreait\Firebase\Exception\RuntimeException;
 
-/**
- * @internal
- */
-final class Storage implements Contract\Storage
+class Storage implements Contract\Storage
 {
     private StorageClient $storageClient;
 
@@ -20,6 +17,9 @@ final class Storage implements Contract\Storage
     /** @var Bucket[] */
     private array $buckets = [];
 
+    /**
+     * @internal
+     */
     public function __construct(StorageClient $storageClient, ?string $defaultBucket = null)
     {
         $this->storageClient = $storageClient;

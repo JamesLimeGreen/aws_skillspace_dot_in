@@ -20,6 +20,9 @@ class AppInstanceApiClient
 
     private MessagingApiExceptionConverter $errorHandler;
 
+    /**
+     * @internal
+     */
     public function __construct(ClientInterface $client, MessagingApiExceptionConverter $errorHandler)
     {
         $this->client = $client;
