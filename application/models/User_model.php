@@ -16,7 +16,7 @@ class User_model extends CI_Model
 
         if (!$this->firebaseAuth) {
             $factory = (new Factory)
-                ->withServiceAccount('application/config/skill-space-c31a2-firebase-adminsdk-n7zyj-119c815543.json')
+                ->withServiceAccount('/home/ubuntu/credentials/firebase-auth.json')
                 ->withDatabaseUri('gs://skill-space-c31a2.appspot.com');
             $this->firebaseAuth = $factory->createAuth();
         }
