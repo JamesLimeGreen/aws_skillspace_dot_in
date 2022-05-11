@@ -1,1 +1,13 @@
 /application/logs/*
+/application/._.DS_Store
+/application/.DS_Store
+/20372_Source
+/application_zip_0
+/application_zip_1
+/update/__MACOSX
+/update_pack/.DS_Store
+/composer.lock
+/system/.DS_Store
+/system/._.DS_Store
+/uploads/.DS_Store
+/uploads/._.DS_Store

@@ -87,7 +87,6 @@ class Home extends CI_Controller
             $selected_rating = $_GET['rating'];
         }
 
-
         if ($selected_category_id == "all" && $selected_price == "all" && $selected_level == 'all' && $selected_language == 'all' && $selected_rating == 'all') {
             if (!addon_status('scorm_course')) {
                 $this->db->where('course_type', 'general');
@@ -96,7 +95,7 @@ class Home extends CI_Controller
             $total_rows = $this->db->get('course')->num_rows();
             $config = array();
             $config = pagintaion($total_rows, 6);
-            $config['base_url']  = site_url('home/courses/');
+            $config['base_url'] = site_url('home/courses/');
             $this->pagination->initialize($config);
             if (!addon_status('scorm_course')) {
                 $this->db->where('course_type', 'general');
@@ -108,14 +107,14 @@ class Home extends CI_Controller
             $page_data['courses'] = $courses;
         }
 
-        $page_data['page_name']  = "courses_page";
+        $page_data['page_name'] = "courses_page";
         $page_data['page_title'] = site_phrase('courses');
-        $page_data['layout']     = $layout;
-        $page_data['selected_category_id']     = $selected_category_id;
-        $page_data['selected_price']     = $selected_price;
-        $page_data['selected_level']     = $selected_level;
-        $page_data['selected_language']     = $selected_language;
-        $page_data['selected_rating']     = $selected_rating;
+        $page_data['layout'] = $layout;
+        $page_data['selected_category_id'] = $selected_category_id;
+        $page_data['selected_price'] = $selected_price;
+        $page_data['selected_level'] = $selected_level;
+        $page_data['selected_language'] = $selected_language;
+        $page_data['selected_rating'] = $selected_rating;
         $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
@@ -202,16 +201,16 @@ class Home extends CI_Controller
         $total_rows = $this->crud_model->purchase_history($this->session->userdata('user_id'))->num_rows();
         $config = array();
         $config = pagintaion($total_rows, 10);
-        $config['base_url']  = site_url('home/purchase_history');
+        $config['base_url'] = site_url('home/purchase_history');
         $this->pagination->initialize($config);
-        $page_data['per_page']   = $config['per_page'];
+        $page_data['per_page'] = $config['per_page'];
 
-        if (addon_status('offline_payment') == 1) :
+        if (addon_status('offline_payment') == 1):
             $this->load->model('addons/offline_payment_model');
             $page_data['pending_offline_payment_history'] = $this->offline_payment_model->pending_offline_payment($this->session->userdata('user_id'))->result_array();
         endif;
 
-        $page_data['page_name']  = "purchase_history";
+        $page_data['page_name'] = "purchase_history";
         $page_data['page_title'] = site_phrase('purchase_history');
         $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
@@ -324,17 +323,20 @@ class Home extends CI_Controller
 
     public function isLoggedIn()
     {
-        if ($this->session->userdata('user_login') == 1)
+        if ($this->session->userdata('user_login') == 1) {
             echo true;
-        else
+        } else {
             echo false;
+        }
+
     }
 
     //choose payment gateway
     public function payment()
     {
-        if ($this->session->userdata('user_login') != 1)
+        if ($this->session->userdata('user_login') != 1) {
             redirect('login', 'refresh');
+        }
 
         $page_data['total_price_of_checking_out'] = $this->session->userdata('total_price_of_checking_out');
         $page_data['page_title'] = site_phrase("payment_gateway");
@@ -344,18 +346,19 @@ class Home extends CI_Controller
     // SHOW PAYPAL CHECKOUT PAGE
     public function paypal_checkout($payment_request = "only_for_mobile")
     {
-        if ($this->session->userdata('user_login') != 1 && $payment_request != 'true')
+        if ($this->session->userdata('user_login') != 1 && $payment_request != 'true') {
             redirect('home', 'refresh');
+        }
 
         //checking price
-        if ($this->session->userdata('total_price_of_checking_out') == $this->input->post('total_price_of_checking_out')) :
+        if ($this->session->userdata('total_price_of_checking_out') == $this->input->post('total_price_of_checking_out')):
             $total_price_of_checking_out = $this->input->post('total_price_of_checking_out');
-        else :
+        else:
             $total_price_of_checking_out = $this->session->userdata('total_price_of_checking_out');
         endif;
         $page_data['payment_request'] = $payment_request;
-        $page_data['user_details']    = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
-        $page_data['amount_to_pay']   = $total_price_of_checking_out;
+        $page_data['user_details'] = $this->user_model->get_user($this->session->userdata('user_id'));
+        $page_data['amount_to_pay'] = $total_price_of_checking_out;
         $this->load->view('frontend/' . get_frontend_settings('theme') . '/paypal_checkout', $page_data);
     }
 
@@ -367,10 +370,10 @@ class Home extends CI_Controller
 
         if ($paypal[0]->mode == 'sandbox') {
             $paypalClientID = $paypal[0]->sandbox_client_id;
-            $paypalSecret   = $paypal[0]->sandbox_secret_key;
+            $paypalSecret = $paypal[0]->sandbox_secret_key;
         } else {
             $paypalClientID = $paypal[0]->production_client_id;
-            $paypalSecret   = $paypal[0]->production_secret_key;
+            $paypalSecret = $paypal[0]->production_secret_key;
         }
 
         //THIS IS HOW I CHECKED THE PAYPAL PAYMENT STATUS
@@ -383,10 +386,10 @@ class Home extends CI_Controller
         $this->crud_model->course_purchase($user_id, 'paypal', $amount_paid);
         $this->email_model->course_purchase_notification($user_id, 'paypal', $amount_paid);
         $this->session->set_flashdata('flash_message', site_phrase('payment_successfully_done'));
-        if ($payment_request_mobile == 'true') :
+        if ($payment_request_mobile == 'true'):
             $course_id = $this->session->userdata('cart_items');
             redirect('home/payment_success_mobile/' . $course_id[0] . '/' . $user_id . '/paid', 'refresh');
-        else :
+        else:
             $this->session->set_userdata('cart_items', array());
             redirect('home/my_courses', 'refresh');
         endif;
@@ -395,14 +398,15 @@ class Home extends CI_Controller
     // SHOW STRIPE CHECKOUT PAGE
     public function stripe_checkout($payment_request = "only_for_mobile")
     {
-        if ($this->session->userdata('user_login') != 1 && $payment_request != 'true')
+        if ($this->session->userdata('user_login') != 1 && $payment_request != 'true') {
             redirect('home', 'refresh');
+        }
 
         //checking price
         $total_price_of_checking_out = $this->session->userdata('total_price_of_checking_out');
         $page_data['payment_request'] = $payment_request;
-        $page_data['user_details']    = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
-        $page_data['amount_to_pay']   = $total_price_of_checking_out;
+        $page_data['user_details'] = $this->user_model->get_user($this->session->userdata('user_id'));
+        $page_data['amount_to_pay'] = $total_price_of_checking_out;
         $this->load->view('payment/stripe/stripe_checkout', $page_data);
     }
 
@@ -415,37 +419,36 @@ class Home extends CI_Controller
         if ($response['payment_status'] === 'succeeded') {
             // STUDENT ENROLMENT OPERATIONS AFTER A SUCCESSFUL PAYMENT
             $check_duplicate = $this->crud_model->check_duplicate_payment_for_stripe($response['transaction_id'], $session_id);
-            if ($check_duplicate == false) :
+            if ($check_duplicate == false):
                 $this->crud_model->enrol_student($user_id);
                 $this->crud_model->course_purchase($user_id, 'stripe', $response['paid_amount'], $response['transaction_id'], $session_id);
                 $this->email_model->course_purchase_notification($user_id, 'stripe', $response['paid_amount']);
-            else :
+            else:
                 //duplicate payment
                 $this->session->set_flashdata('error_message', site_phrase('session_time_out'));
                 redirect('home/shopping_cart', 'refresh');
             endif;
 
-            if ($payment_request_mobile == 'true') :
+            if ($payment_request_mobile == 'true'):
                 $course_id = $this->session->userdata('cart_items');
                 $this->session->set_flashdata('flash_message', site_phrase('payment_successfully_done'));
                 redirect('home/payment_success_mobile/' . $course_id[0] . '/' . $user_id . '/paid', 'refresh');
-            else :
+            else:
                 $this->session->set_userdata('cart_items', array());
                 $this->session->set_flashdata('flash_message', site_phrase('payment_successfully_done'));
                 redirect('home/my_courses', 'refresh');
             endif;
         } else {
-            if ($payment_request_mobile == 'true') :
+            if ($payment_request_mobile == 'true'):
                 $course_id = $this->session->userdata('cart_items');
                 $this->session->set_flashdata('flash_message', $response['status_msg']);
                 redirect('home/payment_success_mobile/' . $course_id[0] . '/' . $user_id . '/error', 'refresh');
-            else :
+            else:
                 $this->session->set_flashdata('error_message', $response['status_msg']);
                 redirect('home/shopping_cart', 'refresh');
             endif;
         }
     }
-
 
     public function lesson($slug = "", $course_id = "", $lesson_id = "")
     {
@@ -468,10 +471,10 @@ class Home extends CI_Controller
                     if ($lessons->num_rows() > 0) {
                         $default_lesson = $lessons->row_array();
                         $lesson_id = $default_lesson['id'];
-                        $page_data['lesson_id']  = $default_lesson['id'];
+                        $page_data['lesson_id'] = $default_lesson['id'];
                     }
                 } else {
-                    $page_data['lesson_id']  = $lesson_id;
+                    $page_data['lesson_id'] = $lesson_id;
                     $section_id = $this->db->get_where('lesson', array('id' => $lesson_id))->row()->section_id;
                     $page_data['section_id'] = $section_id;
                 }
@@ -503,10 +506,9 @@ class Home extends CI_Controller
             }
         }
 
-
-        $page_data['course_details']  = $course_details;
-        $page_data['course_id']  = $course_id;
-        $page_data['page_name']  = 'lessons';
+        $page_data['course_details'] = $course_details;
+        $page_data['course_id'] = $course_id;
+        $page_data['page_name'] = 'lessons';
         $page_data['page_title'] = $course_details['title'];
         $this->load->view('lessons/index', $page_data);
     }
@@ -532,7 +534,7 @@ class Home extends CI_Controller
         if (!$this->session->userdata('layout')) {
             $this->session->set_userdata('layout', 'list');
         }
-        $page_data['layout']     = $this->session->userdata('layout');
+        $page_data['layout'] = $this->session->userdata('layout');
         $page_data['page_name'] = 'courses_page';
         $page_data['search_string'] = $search_string;
         $page_data['page_title'] = site_phrase('search_results');
@@ -606,7 +608,6 @@ class Home extends CI_Controller
         $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
-
     // Version 1.1
     public function dashboard($param1 = "")
     {
@@ -620,9 +621,9 @@ class Home extends CI_Controller
             $page_data['type'] = $param1;
         }
 
-        $page_data['page_name']  = 'instructor_dashboard';
+        $page_data['page_name'] = 'instructor_dashboard';
         $page_data['page_title'] = site_phrase('instructor_dashboard');
-        $page_data['user_id']    = $this->session->userdata('user_id');
+        $page_data['user_id'] = $this->session->userdata('user_id');
         $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
@@ -644,12 +645,12 @@ class Home extends CI_Controller
         }
 
         if ($param2 == "") {
-            $page_data['type']   = 'edit_course';
+            $page_data['type'] = 'edit_course';
         } else {
-            $page_data['type']   = $param2;
+            $page_data['type'] = $param2;
         }
-        $page_data['page_name']  = 'manage_course_details';
-        $page_data['course_id']  = $param1;
+        $page_data['page_name'] = 'manage_course_details';
+        $page_data['course_id'] = $param1;
         $page_data['page_title'] = site_phrase('edit_course');
         $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
@@ -678,7 +679,6 @@ class Home extends CI_Controller
             }
         }
     }
-
 
     public function sections($action = "", $course_id = "", $section_id = "")
     {
@@ -731,17 +731,17 @@ class Home extends CI_Controller
         if ($this->session->userdata('user_login') != 1) {
             redirect('home', 'refresh');
         }
-        $page_data['type']      = 'manage_lesson';
+        $page_data['type'] = 'manage_lesson';
         $page_data['course_id'] = $course_id;
         $page_data['lesson_id'] = $lesson_id;
-        $page_data['page_name']  = 'lesson_edit';
+        $page_data['page_name'] = 'lesson_edit';
         $page_data['page_title'] = site_phrase('update_lesson');
         $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
     public function download($filename = "")
     {
-        $tmp           = explode('.', $filename);
+        $tmp = explode('.', $filename);
         $fileExtension = strtolower(end($tmp));
         $yourFile = base_url() . 'uploads/lesson_files/' . $filename;
         $file = @fopen($yourFile, "rb");
@@ -834,11 +834,11 @@ class Home extends CI_Controller
                 "question_id" => $quiz_question['id'],
                 'submitted_answer_status' => $submitted_answer_status,
                 "submitted_answers" => json_encode($submitted_answers),
-                "correct_answers"  => json_encode($correct_answers),
+                "correct_answers" => json_encode($correct_answers),
             );
             array_push($submitted_quiz_info, $container);
         }
-        $page_data['submitted_quiz_info']   = $submitted_quiz_info;
+        $page_data['submitted_quiz_info'] = $submitted_quiz_info;
         $page_data['total_correct_answers'] = $total_correct_answers;
         $page_data['total_questions'] = count($quiz_questions);
         if ($from == 'mobile') {
@@ -902,7 +902,7 @@ class Home extends CI_Controller
     }
 
     // AJAX CALL FUNCTION FOR CHECKING COURSE PROGRESS
-    function check_course_progress($course_id)
+    public function check_course_progress($course_id)
     {
         echo course_progress($course_id);
     }
@@ -914,7 +914,6 @@ class Home extends CI_Controller
         $data['page_name'] = 'quiz';
         $this->load->view('mobile/index', $data);
     }
-
 
     // CHECK CUSTOM SESSION DATA
     public function session_data()
@@ -938,9 +937,8 @@ class Home extends CI_Controller
         echo true;
     }
 
-
     //FOR MOBILE
-    public function course_purchase($auth_token = '', $course_id  = '')
+    public function course_purchase($auth_token = '', $course_id = '')
     {
         $this->load->model('jwt_model');
         if (empty($auth_token) || $auth_token == "null") {
@@ -990,7 +988,7 @@ class Home extends CI_Controller
     //FOR MOBILE
     public function payment_success_mobile($course_id = "", $user_id = "", $enroll_type = "")
     {
-        if ($course_id > 0 && $user_id > 0) :
+        if ($course_id > 0 && $user_id > 0):
             $page_data['cart_item'] = $course_id;
             $page_data['user_id'] = $user_id;
             $page_data['is_login_now'] = 1;
@@ -1011,7 +1009,7 @@ class Home extends CI_Controller
     //FOR MOBILE
     public function payment_gateway_mobile($course_id = "", $user_id = "")
     {
-        if ($course_id > 0 && $user_id > 0) :
+        if ($course_id > 0 && $user_id > 0):
             $page_data['page_name'] = 'payment_gateway';
             $this->load->view('mobile/index', $page_data);
         endif;

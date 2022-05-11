@@ -1,8 +1,10 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Course_bundles extends CI_Controller {
-    public function __construct() {
+class Course_bundles extends CI_Controller
+{
+    public function __construct()
+    {
         parent::__construct();
 
         $this->load->database();
@@ -15,11 +17,12 @@ class Course_bundles extends CI_Controller {
         $this->output->set_header('Pragma: no-cache');
     }
 
-    function index(){
+    public function index()
+    {
         $rows = $this->course_bundle_model->get_active_bundle();
         $config = array();
         $config = pagintaion($rows->num_rows(), 6);
-        $config['base_url']  = site_url('course_bundles/');
+        $config['base_url'] = site_url('course_bundles/');
         $this->pagination->initialize($config);
 
         $this->db->where('status', 1);
@@ -27,13 +30,14 @@ class Course_bundles extends CI_Controller {
 
         $page_data['page_name'] = "course_bundle";
         $page_data['page_title'] = site_phrase('course_bundle');
-        $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
+        $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
-    function search($search_string = ""){
+    public function search($search_string = "")
+    {
         if (isset($_GET['string']) && !empty($_GET['string'])) {
             $search_string = $_GET['string'];
-        }else {
+        } else {
             redirect(site_url('course_bundles'), 'refresh');
         }
 
@@ -41,35 +45,39 @@ class Course_bundles extends CI_Controller {
         $page_data['search_string'] = $search_string;
         $page_data['page_name'] = "course_bundle";
         $page_data['page_title'] = site_phrase('course_bundle');
-        $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
+        $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
-    function load_more_courses_in_bundle($bundle_id = "", $limit = ""){
+    public function load_more_courses_in_bundle($bundle_id = "", $limit = "")
+    {
         $page_data['bundle_details'] = $this->course_bundle_model->get_bundle($bundle_id)->row_array();
-        if($limit > 3){
+        if ($limit > 3) {
             $page_data['courses'] = $this->course_bundle_model->get_courses_by_bundle_id($bundle_id, $limit)->result_array();
         }
-        $this->load->view('frontend/'.get_frontend_settings('theme').'/load_more_courses_in_bundle', $page_data);
+        $this->load->view('frontend/' . get_frontend_settings('theme') . '/load_more_courses_in_bundle', $page_data);
     }
 
-    function bundle_details($bundle_id = ""){
-        if($bundle_id == "" || is_numeric($bundle_id) != true)
-        redirect(site_url('course_bundles'), 'refresh');
+    public function bundle_details($bundle_id = "")
+    {
+        if ($bundle_id == "" || is_numeric($bundle_id) != true) {
+            redirect(site_url('course_bundles'), 'refresh');
+        }
 
         $page_data['bundle_details'] = $this->course_bundle_model->get_bundle_details($bundle_id)->row_array();
         $page_data['instructor_details'] = $this->user_model->get_all_user($page_data['bundle_details']['user_id'])->row_array();
         $page_data['page_name'] = "bundle_details";
         $page_data['page_title'] = site_phrase('bundle_details');
-        $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
+        $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
-    function buy($bundle_id = ""){
-        if(!$this->session->userdata('user_login')){
+    public function buy($bundle_id = "")
+    {
+        if (!$this->session->userdata('user_login')) {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
 
-        if($bundle_id == ""){
+        if ($bundle_id == "") {
             $this->session->set_flashdata('error_message', get_phrase('please_enter_numeric_valid_course_id'));
             redirect(site_url('course_bundles'), 'refresh');
         }
@@ -86,53 +94,56 @@ class Course_bundles extends CI_Controller {
         $this->load->view('bundle_payment/index', $page_data);
     }
 
-    function my_bundles(){
-        if(!$this->session->userdata('user_login')){
+    public function my_bundles()
+    {
+        if (!$this->session->userdata('user_login')) {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
         $page_data['page_name'] = "my_bundles";
         $page_data['page_title'] = site_phrase('my_bundles');
         $page_data['my_bundles'] = $this->course_bundle_model->my_bundles();
-        $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
+        $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
-    function my_bundles_by_search_string(){
-        if(!$this->session->userdata('user_login')){
+    public function my_bundles_by_search_string()
+    {
+        if (!$this->session->userdata('user_login')) {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
         $search_string = html_escape($this->input->post('search_string'));
         $page_data['my_bundles'] = $this->course_bundle_model->my_bundles_by_search_string($search_string);
-        $this->load->view('frontend/'.get_frontend_settings('theme').'/user_purchase_bundle', $page_data);
+        $this->load->view('frontend/' . get_frontend_settings('theme') . '/user_purchase_bundle', $page_data);
     }
 
-    public function lesson($slug = "", $bundle_id = "", $course_id = "", $lesson_id = "") {
-        if(!$this->session->userdata('user_login')){
+    public function lesson($slug = "", $bundle_id = "", $course_id = "", $lesson_id = "")
+    {
+        if (!$this->session->userdata('user_login')) {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
 
-        if($this->course_bundle_model->get_bundle($bundle_id)->row('status') != 1){
+        if ($this->course_bundle_model->get_bundle($bundle_id)->row('status') != 1) {
             $this->session->set_flashdata('error_message', get_phrase('this_bundle_is_currently_disabled'));
             redirect('home/my_bundles', 'refresh');
         }
 
-        if(get_bundle_validity($bundle_id) == 'invalid'){
+        if (get_bundle_validity($bundle_id) == 'invalid') {
             $this->session->set_flashdata('error_message', get_phrase('please_buy_the_bundle_first'));
             redirect('home/my_bundles', 'refresh');
-        }elseif(get_bundle_validity($bundle_id) == 'expire'){
+        } elseif (get_bundle_validity($bundle_id) == 'expire') {
             $this->session->set_flashdata('error_message', get_phrase('please_renew_your_bundle'));
             redirect('home/my_bundles', 'refresh');
         }
 
         $course_details = $this->crud_model->get_course_by_id($course_id)->row_array();
 
-        if($course_details['status'] != 'active'){
+        if ($course_details['status'] != 'active') {
             $this->session->set_flashdata('error_message', get_phrase('this_course_is_currently_disabled'));
             redirect('home/my_bundles', 'refresh');
         }
-        
+
         $sections = $this->crud_model->get_section('course', $course_id);
         if ($sections->num_rows() > 0) {
             $page_data['sections'] = $sections->result_array();
@@ -143,40 +154,41 @@ class Course_bundles extends CI_Controller {
                 if ($lessons->num_rows() > 0) {
                     $default_lesson = $lessons->row_array();
                     $lesson_id = $default_lesson['id'];
-                    $page_data['lesson_id']  = $default_lesson['id'];
-                }else {
+                    $page_data['lesson_id'] = $default_lesson['id'];
+                } else {
                     $page_data['page_name'] = 'empty';
                     $page_data['page_title'] = site_phrase('no_lesson_found');
                     $page_data['page_body'] = site_phrase('no_lesson_found');
                 }
-            }else {
-                $page_data['lesson_id']  = $lesson_id;
+            } else {
+                $page_data['lesson_id'] = $lesson_id;
                 $section_id = $this->db->get_where('lesson', array('id' => $lesson_id))->row()->section_id;
                 $page_data['section_id'] = $section_id;
             }
 
-        }else {
+        } else {
             $page_data['sections'] = array();
             $page_data['page_name'] = 'empty';
             $page_data['page_title'] = site_phrase('no_section_found');
             $page_data['page_body'] = site_phrase('no_section_found');
         }
 
-        $page_data['bundle_id']  = $bundle_id;
-        $page_data['course_id']  = $course_id;
-        $page_data['page_name']  = 'lessons';
+        $page_data['bundle_id'] = $bundle_id;
+        $page_data['course_id'] = $course_id;
+        $page_data['page_name'] = 'lessons';
         $page_data['page_title'] = $course_details['title'];
         $this->load->view('lessons/index', $page_data);
     }
 
-    function invoice($payment_id = ''){
-        if(!$this->session->userdata('user_login')){
+    public function invoice($payment_id = '')
+    {
+        if (!$this->session->userdata('user_login')) {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
 
         $page_data['bundle_payment'] = $this->course_bundle_model->get_bundle_payment($payment_id)->row_array();
-        
+
         $page_data['bundle_details'] = $this->course_bundle_model->get_bundle($page_data['bundle_payment']['bundle_id'])->row_array();
         //student ID
         $page_data['student_details'] = $this->user_model->get_all_user($page_data['bundle_payment']['user_id'])->row_array();
@@ -184,24 +196,26 @@ class Course_bundles extends CI_Controller {
         //instructor ID
         $page_data['instructor_details'] = $this->user_model->get_all_user($page_data['bundle_payment']['bundle_creator_id'])->row_array();
 
-        $page_data['page_name']  = 'bundle_invoice';
+        $page_data['page_name'] = 'bundle_invoice';
         $page_data['page_title'] = site_phrase('invoice');
-        $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
+        $this->load->view('frontend/' . get_frontend_settings('theme') . '/index', $page_data);
     }
 
-    function bundle_purchase_history($bundle_id = ""){
-        if(!$this->session->userdata('user_login')){
+    public function bundle_purchase_history($bundle_id = "")
+    {
+        if (!$this->session->userdata('user_login')) {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
 
         $user_id = $this->session->userdata('user_id');
         $page_data['bundle_purchase_histories'] = $this->course_bundle_model->bundle_wise_purchase_history($bundle_id, $user_id);
-        $this->load->view('frontend/'.get_frontend_settings('theme').'/bundle_purchase_history', $page_data);
+        $this->load->view('frontend/' . get_frontend_settings('theme') . '/bundle_purchase_history', $page_data);
     }
 
-    function bundle_rating($bundle_id = ""){
-        if(!$this->session->userdata('user_login')){
+    public function bundle_rating($bundle_id = "")
+    {
+        if (!$this->session->userdata('user_login')) {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
@@ -209,51 +223,49 @@ class Course_bundles extends CI_Controller {
         $user_id = $this->session->userdata('user_id');
         $page_data['user_bundle_rating'] = $this->course_bundle_model->get_user_bundle_rating($user_id, $bundle_id);
         $page_data['bundle_id'] = $bundle_id;
-        $this->load->view('frontend/'.get_frontend_settings('theme').'/user_bundle_rating', $page_data);
+        $this->load->view('frontend/' . get_frontend_settings('theme') . '/user_bundle_rating', $page_data);
     }
 
-    function update_bundle_rating($bundle_id = ""){
-        if(!$this->session->userdata('user_login')){
+    public function update_bundle_rating($bundle_id = "")
+    {
+        if (!$this->session->userdata('user_login')) {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
 
         $user_id = $this->session->userdata('user_id');
-        if(get_bundle_validity($bundle_id, $user_id) == 'valid'){
-            if(html_escape($this->input->post('rating')) > 0){
+        if (get_bundle_validity($bundle_id, $user_id) == 'valid') {
+            if (html_escape($this->input->post('rating')) > 0) {
                 $this->course_bundle_model->update_bundle_rating($bundle_id, $user_id);
                 echo 'success';
-            }else{
+            } else {
                 echo 0;
             }
-        }else{
+        } else {
             echo 'expired';
         }
     }
 
-
-
-
-
-
     // SHOW STRIPE CHECKOUT PAGE
-    public function stripe_checkout($payment_request_from = "") {
-        if ($this->session->userdata('user_login') != 1 && $payment_request_from == 'from_web'){
+    public function stripe_checkout($payment_request_from = "")
+    {
+        if ($this->session->userdata('user_login') != 1 && $payment_request_from == 'from_web') {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
 
         //checking price
         $page_data['payment_request_from'] = $payment_request_from;
-        $page_data['user_details']    = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
+        $page_data['user_details'] = $this->user_model->get_user($this->session->userdata('user_id'));
         $page_data['bundle_details'] = $this->course_bundle_model->get_bundle_details($this->session->userdata('checkout_bundle_id'))->row_array();
-        $page_data['amount_to_pay']   = $this->session->userdata('checkout_bundle_price');
+        $page_data['amount_to_pay'] = $this->session->userdata('checkout_bundle_price');
         $this->load->view('bundle_payment/stripe/stripe_checkout', $page_data);
     }
 
     // STRIPE CHECKOUT ACTIONS
-    public function stripe_payment($user_id = "", $payment_request_from = "", $session_id = "") {
-        if ($this->session->userdata('user_login') != 1 && $payment_request_from == 'from_web'){
+    public function stripe_payment($user_id = "", $payment_request_from = "", $session_id = "")
+    {
+        if ($this->session->userdata('user_login') != 1 && $payment_request_from == 'from_web') {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
@@ -265,7 +277,7 @@ class Course_bundles extends CI_Controller {
             // STUDENT ENROLMENT OPERATIONS AFTER A SUCCESSFUL PAYMENT
 
             $check_duplicate = $this->db->get_where('bundle_payment', array('user_id' => $user_id, 'session_id' => $session_id, 'transaction_id' => $response['transaction_id']))->num_rows();
-            if($check_duplicate <= 0):
+            if ($check_duplicate <= 0):
                 $this->course_bundle_model->bundle_purchase('stripe', $response['paid_amount'], $response['transaction_id'], $session_id);
                 $this->email_model->bundle_purchase_notification($user_id);
 
@@ -276,14 +288,14 @@ class Course_bundles extends CI_Controller {
                 redirect('home/course_bundles', 'refresh');
             endif;
 
-            if($payment_request_from == 'from_web'):
+            if ($payment_request_from == 'from_web'):
                 $this->session->set_flashdata('flash_message', site_phrase('payment_successfully_done'));
                 redirect('home/my_bundles', 'refresh');
             else:
                 //for mobile
             endif;
-        }else{
-            if($payment_request_from == 'from_web'):
+        } else {
+            if ($payment_request_from == 'from_web'):
                 $this->session->set_flashdata('error_message', $response['status_msg']);
                 redirect('home', 'refresh');
             else:
@@ -294,31 +306,30 @@ class Course_bundles extends CI_Controller {
 
     }
 
-
-
-
     // SHOW PAYPAL CHECKOUT PAGE
-    public function paypal_checkout($payment_request_from = "") {
+    public function paypal_checkout($payment_request_from = "")
+    {
         // true for web
-        if ($this->session->userdata('user_login') != 1 && $payment_request_from == ''){
+        if ($this->session->userdata('user_login') != 1 && $payment_request_from == '') {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
 
         //checking price
-        if(empty($this->input->post('payment_request_from'))){
+        if (empty($this->input->post('payment_request_from'))) {
             $page_data['payment_request_from'] = $payment_request_from;
-        }else{
+        } else {
             $page_data['payment_request_from'] = html_escape($this->input->post('payment_request_from'));
         }
-        $page_data['user_details']    = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
-        $page_data['amount_to_pay']   = $this->session->userdata('checkout_bundle_price');
+        $page_data['user_details'] = $this->user_model->get_user($this->session->userdata('user_id'));
+        $page_data['amount_to_pay'] = $this->session->userdata('checkout_bundle_price');
         $this->load->view('bundle_payment/paypal/paypal_checkout', $page_data);
     }
 
     // PAYPAL CHECKOUT ACTIONS
-    public function paypal_payment($user_id = "", $amount_paid = "", $paymentID = "", $paymentToken = "", $payerID = "", $payment_request_from = "") {
-        if ($this->session->userdata('user_login') != 1 && $payment_request_from == ''){
+    public function paypal_payment($user_id = "", $amount_paid = "", $paymentID = "", $paymentToken = "", $payerID = "", $payment_request_from = "")
+    {
+        if ($this->session->userdata('user_login') != 1 && $payment_request_from == '') {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
@@ -328,10 +339,10 @@ class Course_bundles extends CI_Controller {
 
         if ($paypal[0]->mode == 'sandbox') {
             $paypalClientID = $paypal[0]->sandbox_client_id;
-            $paypalSecret   = $paypal[0]->sandbox_secret_key;
-        }else{
+            $paypalSecret = $paypal[0]->sandbox_secret_key;
+        } else {
             $paypalClientID = $paypal[0]->production_client_id;
-            $paypalSecret   = $paypal[0]->production_secret_key;
+            $paypalSecret = $paypal[0]->production_secret_key;
         }
 
         //THIS IS HOW I CHECKED THE PAYPAL PAYMENT STATUS
@@ -347,7 +358,7 @@ class Course_bundles extends CI_Controller {
         $this->session->set_userdata('checkout_bundle_price', null);
         $this->session->set_userdata('checkout_bundle_id', null);
 
-        if($payment_request_from == 'from_web'):
+        if ($payment_request_from == 'from_web'):
             $this->session->set_flashdata('flash_message', site_phrase('payment_successfully_done'));
             redirect('home/my_bundles', 'refresh');
         else:
@@ -356,115 +367,116 @@ class Course_bundles extends CI_Controller {
 
     }
     //Paypal End
-    
+
     // Peach payment start  05 january 2022
 
-    public function peach_payment_checkout($payment_request_from = "") {
+    public function peach_payment_checkout($payment_request_from = "")
+    {
 
-        if ($this->session->userdata('user_login') != 1 && $payment_request_from == 'from_web'){
+        if ($this->session->userdata('user_login') != 1 && $payment_request_from == 'from_web') {
             $this->session->set_flashdata('error_message', get_phrase('please_login_first'));
             redirect('home/login', 'refresh');
         }
-      $user_id = $this->session->userdata('user_id');
-      $amount = $this->session->userdata('checkout_bundle_price');
+        $user_id = $this->session->userdata('user_id');
+        $amount = $this->session->userdata('checkout_bundle_price');
 
-
-      $amount = number_format((float)$amount, 2, '.', '');
-      $peach_payment = json_decode(get_settings('peach_payment_keys'));
-      if($peach_payment[0]->testmode == 'on'){
-        $entityId = trim($peach_payment[0]->test_entity_id);
-        $accessToken = trim($peach_payment[0]->test_access_token);
-        $url = "https://test.oppwa.com/v1/checkouts";
-      }else{
-        $entityId = trim($peach_payment[0]->live_entity_id);
-        $accessToken = trim($peach_payment[0]->live_access_token);
-        $url = "https://oppwa.com/v1/checkouts";
-      }
+        $amount = number_format((float) $amount, 2, '.', '');
+        $peach_payment = json_decode(get_settings('peach_payment_keys'));
+        if ($peach_payment[0]->testmode == 'on') {
+            $entityId = trim($peach_payment[0]->test_entity_id);
+            $accessToken = trim($peach_payment[0]->test_access_token);
+            $url = "https://test.oppwa.com/v1/checkouts";
+        } else {
+            $entityId = trim($peach_payment[0]->live_entity_id);
+            $accessToken = trim($peach_payment[0]->live_access_token);
+            $url = "https://oppwa.com/v1/checkouts";
+        }
         $currency = get_settings('peach_payment_currency');
         $data = "entityId=$entityId" .
-                    "&amount=$amount" .
-                    "&currency=$currency" .
-                    "&paymentType=DB";
+            "&amount=$amount" .
+            "&currency=$currency" .
+            "&paymentType=DB";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                       "Authorization:Bearer $accessToken"));
+            "Authorization:Bearer $accessToken"));
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // this should be set to true in production
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $responseData = curl_exec($ch);
-        if(curl_errno($ch)) {
+        if (curl_errno($ch)) {
             return curl_error($ch);
         }
         curl_close($ch);
         $page_data['checkout_info'] = json_decode($responseData);
-        
+
         $this->load->view('payment/bundle_peach_payment_checkout', $page_data);
     }
-    
+
     // PEACH CHECKOUT ACTIONS
-    public function peach_payment() {
-       if(!empty($_GET['resourcePath'])){
+    public function peach_payment()
+    {
+        if (!empty($_GET['resourcePath'])) {
             $payment_res = $this->verifyPeachPayment($_GET['resourcePath']);
             //echo "<pre>"; print_r($payment_res); exit;
-            if($payment_res['result']['code']=='000.000.000' || $payment_res['result']['code']=='000.000.100' || $payment_res['result']['code']=='000.100.110'){
+            if ($payment_res['result']['code'] == '000.000.000' || $payment_res['result']['code'] == '000.000.100' || $payment_res['result']['code'] == '000.100.110') {
 
                 $user_id = $this->session->userdata('user_id');
                 $amount = $this->session->userdata('checkout_bundle_price');
 
                 $this->course_bundle_model->bundle_purchase('peach', $amount, "", "");
-                
+
                 $this->email_model->bundle_purchase_notification($user_id);
 
                 $this->session->set_userdata('checkout_bundle_price', null);
                 $this->session->set_userdata('checkout_bundle_id', null);
 
-                if($payment_request_from == 'from_web'):
+                if ($payment_request_from == 'from_web'):
                     $this->session->set_flashdata('flash_message', site_phrase('payment_successfully_done'));
                     redirect('home/my_bundles', 'refresh');
                 else:
                     //for mobile
                 endif;
 
-            }else{
+            } else {
                 $this->session->set_flashdata('error_message', 'Payment could not be processed. Please try again');
                 redirect(site_url('home'), 'refresh');
             }
 
-            
-        }else{
+        } else {
             $this->session->set_userdata('cart_items', array());
-            redirect('home', 'refresh');  
+            redirect('home', 'refresh');
         }
     }
 
-    private function verifyPeachPayment($resourcePath){
+    private function verifyPeachPayment($resourcePath)
+    {
         $peach_payment = json_decode(get_settings('peach_payment_keys'));
 
-        if($peach_payment[0]->testmode == 'on'){
-           $url = "https://test.oppwa.com";
-           $entityId = trim($peach_payment[0]->test_entity_id);
-           $accessToken = trim($peach_payment[0]->test_access_token);
-        }else{
-           $url = "https://oppwa.com";
-           $entityId = trim($peach_payment[0]->live_entity_id);
-           $accessToken = trim($peach_payment[0]->live_access_token);
+        if ($peach_payment[0]->testmode == 'on') {
+            $url = "https://test.oppwa.com";
+            $entityId = trim($peach_payment[0]->test_entity_id);
+            $accessToken = trim($peach_payment[0]->test_access_token);
+        } else {
+            $url = "https://oppwa.com";
+            $entityId = trim($peach_payment[0]->live_entity_id);
+            $accessToken = trim($peach_payment[0]->live_access_token);
         }
 
-        $url = $url.''.$resourcePath;
+        $url = $url . '' . $resourcePath;
 
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => $url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => '',
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 0,
-          CURLOPT_FOLLOWLOCATION => true,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
         ));
 
         $response = curl_exec($curl);
@@ -474,5 +486,4 @@ class Course_bundles extends CI_Controller {
 
     }
 
-    
 }

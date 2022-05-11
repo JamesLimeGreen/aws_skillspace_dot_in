@@ -1,5 +1,5 @@
 <?php
-$user_details = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
+$user_details = $this->user_model->get_user($this->session->userdata('user_id'));
 ?>
 <section class="menu-area">
     <div class="container-xl">
@@ -16,7 +16,7 @@ $user_details = $this->user_model->get_user($this->session->userdata('user_id'))
                         <img src="<?php echo base_url('uploads/system/' . get_frontend_settings('dark_logo')); ?>" alt="" height="35">
                     </a>
 
-                    <?php include 'menu.php'; ?>
+                    <?php include 'menu.php';?>
 
 
                     <form class="inline-form" action="<?php echo site_url('home/search'); ?>" method="get" style="width: 100%;">
@@ -28,13 +28,13 @@ $user_details = $this->user_model->get_user($this->session->userdata('user_id'))
                         </div>
                     </form>
 
-                    <?php if (get_settings('allow_instructor') == 1) : ?>
+                    <?php if (get_settings('allow_instructor') == 1): ?>
                         <div class="instructor-box menu-icon-box">
                             <div class="icon">
                                 <a href="<?php echo site_url('user'); ?>" style="border: 1px solid transparent; margin: 10px 10px; font-size: 14px; width: 100%; border-radius: 0;"><?php echo site_phrase('instructor'); ?></a>
                             </div>
                         </div>
-                    <?php endif; ?>
+                    <?php endif;?>
 
                     <div class="instructor-box menu-icon-box">
                         <div class="icon">
@@ -43,15 +43,15 @@ $user_details = $this->user_model->get_user($this->session->userdata('user_id'))
                     </div>
 
                     <div class="wishlist-box menu-icon-box" id="wishlist_items">
-                        <?php include 'wishlist_items.php'; ?>
+                        <?php include 'wishlist_items.php';?>
                     </div>
 
                     <div class="cart-box menu-icon-box" id="cart_items">
-                        <?php include 'cart_items.php'; ?>
+                        <?php include 'cart_items.php';?>
                     </div>
 
-                    <?php //include 'notifications.php'; 
-                    ?>
+                    <?php //include 'notifications.php';
+?>
 
 
                     <div class="user-box menu-icon-box">
@@ -88,9 +88,9 @@ $user_details = $this->user_model->get_user($this->session->userdata('user_id'))
                                 <li class="user-dropdown-menu-item"><a href="<?php echo site_url('home/my_messages'); ?>"><i class="far fa-envelope"></i><?php echo site_phrase('my_messages'); ?></a></li>
                                 <li class="user-dropdown-menu-item"><a href="<?php echo site_url('home/purchase_history'); ?>"><i class="fas fa-shopping-cart"></i><?php echo site_phrase('purchase_history'); ?></a></li>
                                 <li class="user-dropdown-menu-item"><a href="<?php echo site_url('home/profile/user_profile'); ?>"><i class="fas fa-user"></i><?php echo site_phrase('user_profile'); ?></a></li>
-                                <?php if (addon_status('customer_support')) : ?>
+                                <?php if (addon_status('customer_support')): ?>
                                     <li class="user-dropdown-menu-item"><a href="<?php echo site_url('addons/customer_support/user_tickets'); ?>"><i class="fas fa-life-ring"></i><?php echo site_phrase('support'); ?></a></li>
-                                <?php endif; ?>
+                                <?php endif;?>
 
                                 <li class="dropdown-user-logout user-dropdown-menu-item"><a href="<?php echo site_url('login/logout'); ?>"><?php echo site_phrase('log_out'); ?></a></li>
                             </ul>

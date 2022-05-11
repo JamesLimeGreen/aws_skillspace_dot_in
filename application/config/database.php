@@ -77,7 +77,8 @@ $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'root',
-	'password' => 'skill!space@aws',
+	'password' => '',
+	'password1' => 'skill!space@aws',
 	'database' => 'skillurkub_db1',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
@@ -94,3 +95,5 @@ $db['default'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+//we can have more/different config items as required and set in the tenant config file 

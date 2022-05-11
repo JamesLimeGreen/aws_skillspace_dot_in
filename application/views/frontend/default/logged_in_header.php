@@ -1,5 +1,5 @@
 <?php
-  $user_details = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
+$user_details = $this->user_model->get_user($this->session->userdata('user_id'));
 ?>
 <style>
    @media (max-width: 767px) {
@@ -21,7 +21,7 @@
                 <img src="<?php echo base_url('uploads/system/' . get_frontend_settings('dark_logo')); ?>" alt="" height="35">
             </a>
 
-            <?php include 'menu.php'; ?>
+            <?php include 'menu.php';?>
             <form class="inline-form" action="<?php echo site_url('home/search'); ?>" method="get" style="width: 100%;">
                 <div class="input-group search-box mobile-search">
                     <input type="text" name='query' class="form-control" placeholder="<?php echo site_phrase('search_for_courses'); ?>">
@@ -31,13 +31,13 @@
                 </div>
             </form>
 
-            <?php if (get_settings('allow_instructor') == 1 && $user_details['is_instructor']==1) : ?>
+            <?php if (get_settings('allow_instructor') == 1 && $user_details['is_instructor'] == 1): ?>
                 <div class="instructor-box menu-icon-box">
                     <div class="icon">
                         <a href="<?php echo site_url('user'); ?>" style="border: 1px solid transparent; margin: 0px;     padding: 0px 10px; font-size: 14px; width: max-content; border-radius: 5px; height: 40px; line-height: 40px;"><?php echo site_phrase('instructor'); ?></a>
                     </div>
                 </div>
-            <?php endif; ?>
+            <?php endif;?>
 
             <div class="instructor-box menu-icon-box">
                 <div class="icon">
@@ -46,27 +46,27 @@
             </div>
 
             <div class="wishlist-box menu-icon-box" id="wishlist_items">
-                <?php include 'wishlist_items.php'; ?>
+                <?php include 'wishlist_items.php';?>
             </div>
 
             <div class="cart-box menu-icon-box ms-auto">
                 <select class="language_selector" onchange="switch_language(this.value)">
                     <?php
-                     $languages = $this->crud_model->get_all_languages();
-                     foreach ($languages as $language): ?>
+$languages = $this->crud_model->get_all_languages();
+foreach ($languages as $language): ?>
                         <?php if (trim($language) != ""): ?>
-                            <option value="<?php echo strtolower($language); ?>" <?php if ($this->session->userdata('language') == $language): ?>selected<?php endif; ?>><?php echo ucwords($language);?></option>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+                            <option value="<?php echo strtolower($language); ?>" <?php if ($this->session->userdata('language') == $language): ?>selected<?php endif;?>><?php echo ucwords($language); ?></option>
+                        <?php endif;?>
+                    <?php endforeach;?>
                   </select>
               </div>
 
             <div class="cart-box menu-icon-box hidden-mobile cart_items" id="cart_items">
-                <?php include 'cart_items.php'; ?>
+                <?php include 'cart_items.php';?>
             </div>
 
-            <?php //include 'notifications.php'; 
-            ?>
+            <?php //include 'notifications.php';
+?>
             <div class="user-box menu-icon-box">
                 <div class="icon">
                     <a href="javascript::">
@@ -103,14 +103,14 @@
                         <li class="user-dropdown-menu-item"><a href="<?php echo site_url('home/my_messages'); ?>"><i class="far fa-envelope"></i><?php echo site_phrase('my_messages'); ?></a></li>
                         <li class="user-dropdown-menu-item"><a href="<?php echo site_url('home/purchase_history'); ?>"><i class="fas fa-shopping-cart"></i><?php echo site_phrase('purchase_history'); ?></a></li>
                         <li class="user-dropdown-menu-item"><a href="<?php echo site_url('home/profile/user_profile'); ?>"><i class="fas fa-user"></i><?php echo site_phrase('user_profile'); ?></a></li>
-                        <?php if (addon_status('customer_support')) : ?>
+                        <?php if (addon_status('customer_support')): ?>
                             <li class="user-dropdown-menu-item"><a href="<?php echo site_url('addons/customer_support/user_tickets'); ?>"><i class="fas fa-life-ring"></i><?php echo site_phrase('support'); ?></a></li>
-                        <?php endif; ?>
+                        <?php endif;?>
 
                         <li class="dropdown-user-logout user-dropdown-menu-item radius-bottom-10"><a class="radius-bottom-10 py-3" href="<?php echo site_url('login/logout'); ?>"><i class="fas fa-sign-out-alt"></i> <?php echo site_phrase('log_out'); ?></a></li>
                     </ul>
 
-                    
+
                 </div>
             </div>
 

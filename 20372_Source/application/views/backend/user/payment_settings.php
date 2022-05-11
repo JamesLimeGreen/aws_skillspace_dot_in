@@ -1,5 +1,5 @@
 <?php
-$user_data   = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
+$user_data = $this->user_model->get_user($this->session->userdata('user_id'));
 $paypal_keys = json_decode($user_data['paypal_keys'], true);
 $stripe_keys = json_decode($user_data['stripe_keys'], true);
 ?>
@@ -23,17 +23,17 @@ $stripe_keys = json_decode($user_data['stripe_keys'], true);
           <form class="" action="<?php echo site_url('user/payout_settings/paypal_settings'); ?>" method="post" enctype="multipart/form-data">
 
             <div class="form-group">
-              <label><?php echo get_phrase('client_id').' ('.get_phrase('production').')'; ?></label>
+              <label><?php echo get_phrase('client_id') . ' (' . get_phrase('production') . ')'; ?></label>
               <input type="text" name="paypal_client_id" class="form-control" value="<?php echo $paypal_keys[0]['production_client_id']; ?>" required />
             </div>
 
             <div class="form-group">
-              <label><?php echo get_phrase('secret_key').' ('.get_phrase('production').')'; ?></label>
+              <label><?php echo get_phrase('secret_key') . ' (' . get_phrase('production') . ')'; ?></label>
               <?php if (isset($paypal_keys[0]['production_secret_key'])): ?>
                   <input type="text" name="paypal_secret_key" class="form-control" value="<?php echo $paypal_keys[0]['production_secret_key']; ?>" required />
               <?php else: ?>
                   <input type="text" name="paypal_secret_key" class="form-control" placeholder="<?php echo get_phrase('no_secret_key_found'); ?>" required />
-              <?php endif; ?>
+              <?php endif;?>
             </div>
 
             <div class="row justify-content-md-center">

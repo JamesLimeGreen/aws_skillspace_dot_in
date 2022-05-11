@@ -1,8 +1,8 @@
 <?php
-    $user_data   = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
-    $paypal_keys = json_decode($user_data['paypal_keys'], true);
-    $stripe_keys = json_decode($user_data['stripe_keys'], true);
- ?>
+$user_data = $this->user_model->get_user($this->session->userdata('user_id'));
+$paypal_keys = json_decode($user_data['paypal_keys'], true);
+$stripe_keys = json_decode($user_data['stripe_keys'], true);
+?>
 <section class="user-dashboard-area">
     <div class="container">
         <div class="row">

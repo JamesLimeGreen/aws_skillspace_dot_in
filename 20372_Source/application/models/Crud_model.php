@@ -1534,7 +1534,7 @@ class Crud_model extends CI_Model
     public function handleWishList($course_id)
     {
         $wishlists = array();
-        $user_details = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
+        $user_details = $this->user_model->get_user($this->session->userdata('user_id'));
         if ($user_details['wishlist'] == "") {
             array_push($wishlists, $course_id);
         } else {
@@ -1563,7 +1563,7 @@ class Crud_model extends CI_Model
     {
         if ($this->session->userdata('user_login') == 1) {
             $wishlists = array();
-            $user_details = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
+            $user_details = $this->user_model->get_user($this->session->userdata('user_id'));
             $wishlists = json_decode($user_details['wishlist']);
             if (in_array($course_id, $wishlists)) {
                 return true;

@@ -1,15 +1,25 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+use Kreait\Firebase\Factory;
 
 class User_model extends CI_Model
 {
 
-    function __construct()
+    public $firebaseAuth = null;
+
+    public function __construct()
     {
         parent::__construct();
         /*cache control*/
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
         $this->output->set_header('Pragma: no-cache');
+
+        if (!$this->firebaseAuth) {
+            $factory = (new Factory)
+                ->withServiceAccount('application/config/skill-space-c31a2-firebase-adminsdk-n7zyj-119c815543.json')
+                ->withDatabaseUri('gs://skill-space-c31a2.appspot.com');
+            $this->firebaseAuth = $factory->createAuth();
+        }
     }
 
     public function get_admin_details()
@@ -19,11 +29,39 @@ class User_model extends CI_Model
 
     public function get_user($user_id = 0)
     {
-        if ($user_id > 0) {
-            $this->db->where('id', $user_id);
-        }
-        $this->db->where('role_id', 2);
-        return $this->db->get('users');
+        // if ($user_id > 0) {
+        //     $this->db->where('id', $user_id);
+        // }
+        // $this->db->where('role_id', 2);
+        // return $this->db->get('users');
+
+        $user = $this->firebaseAuth->getUser($user_id);
+        $customClaims = $user->customClaims;
+
+        return array(
+            "id" => $user_id,
+            "first_name" => $customClaims['first_name'],
+            "last_name" => $customClaims['last_name'],
+            "commission" => $customClaims['commission'],
+            "email" => $user->email,
+            "skills" => $customClaims['skills'],
+            "social_links" => $customClaims['social_links'],
+            "biography" => $customClaims['biography'],
+            "role_id" => $customClaims['role_id'],
+            "date_added" => $customClaims['date_added'],
+            "last_modified" => $customClaims['last_modified'],
+            "watch_history" => $customClaims['watch_history'],
+            "wishlist" => $customClaims['wishlist'],
+            "title" => $customClaims['title'],
+            "paypal_keys" => $customClaims['paypal_keys'],
+            "stripe_keys" => $customClaims['stripe_keys'],
+            "peach_payment_keys" => $customClaims['peach_payment_keys'],
+            "payment_keys" => $customClaims['payment_keys'],
+            "verification_code" => $customClaims['verification_code'],
+            "status" => $customClaims['status'],
+            "is_instructor" => $customClaims['is_instructor'],
+            "image" => $customClaims['image'],
+        );
     }
 
     public function get_all_user($user_id = 0)
@@ -65,7 +103,7 @@ class User_model extends CI_Model
 
             // Add paypal keys
             $paypal_info = array();
-            $paypal['production_client_id']  = html_escape($this->input->post('paypal_client_id'));
+            $paypal['production_client_id'] = html_escape($this->input->post('paypal_client_id'));
             $paypal['production_secret_key'] = html_escape($this->input->post('paypal_secret_key'));
             array_push($paypal_info, $paypal);
             $data['paypal_keys'] = json_encode($paypal_info);
@@ -74,7 +112,7 @@ class User_model extends CI_Model
             $stripe_info = array();
             $stripe_keys = array(
                 'public_live_key' => html_escape($this->input->post('stripe_public_key')),
-                'secret_live_key' => html_escape($this->input->post('stripe_secret_key'))
+                'secret_live_key' => html_escape($this->input->post('stripe_secret_key')),
             );
             array_push($stripe_info, $stripe_keys);
             $data['stripe_keys'] = json_encode($stripe_info);
@@ -123,7 +161,7 @@ class User_model extends CI_Model
 
             // Add paypal keys
             $paypal_info = array();
-            $paypal['production_client_id']  = '';
+            $paypal['production_client_id'] = '';
             $paypal['production_secret_key'] = '';
             array_push($paypal_info, $paypal);
             $data['paypal_keys'] = json_encode($paypal_info);
@@ -132,7 +170,7 @@ class User_model extends CI_Model
             $stripe_info = array();
             $stripe_keys = array(
                 'public_live_key' => '',
-                'secret_live_key' => ''
+                'secret_live_key' => '',
             );
             array_push($stripe_info, $stripe_keys);
             $data['stripe_keys'] = json_encode($stripe_info);
@@ -202,7 +240,7 @@ class User_model extends CI_Model
 
             // Update paypal keys
             $paypal_info = array();
-            $paypal['production_client_id']  = html_escape($this->input->post('paypal_client_id'));
+            $paypal['production_client_id'] = html_escape($this->input->post('paypal_client_id'));
             $paypal['production_secret_key'] = html_escape($this->input->post('paypal_secret_key'));
             array_push($paypal_info, $paypal);
             $data['paypal_keys'] = json_encode($paypal_info);
@@ -210,7 +248,7 @@ class User_model extends CI_Model
             $stripe_info = array();
             $stripe_keys = array(
                 'public_live_key' => html_escape($this->input->post('stripe_public_key')),
-                'secret_live_key' => html_escape($this->input->post('stripe_secret_key'))
+                'secret_live_key' => html_escape($this->input->post('stripe_secret_key')),
             );
             array_push($stripe_info, $stripe_keys);
             $data['stripe_keys'] = json_encode($stripe_info);
@@ -312,12 +350,11 @@ class User_model extends CI_Model
         $this->session->set_flashdata('flash_message', get_phrase('password_updated'));
     }
 
-
     public function get_instructor($id = 0)
     {
         if ($id > 0) {
-            $res=$this->db->get_where('users', array('id' => $id, 'is_instructor' => 1));
-            if(!$res){
+            $res = $this->db->get_where('users', array('id' => $id, 'is_instructor' => 1));
+            if (!$res) {
                 $res = $this->db->get_where('users', array('id' => $id));
             }
             return $res;
@@ -355,10 +392,12 @@ class User_model extends CI_Model
     public function get_user_image_url($user_id)
     {
         $user_profile_image = $this->db->get_where('users', array('id' => $user_id))->row('image');
-        if (file_exists('uploads/user_image/' . $user_profile_image . '.jpg'))
+        if (file_exists('uploads/user_image/' . $user_profile_image . '.jpg')) {
             return base_url() . 'uploads/user_image/' . $user_profile_image . '.jpg';
-        else
+        } else {
             return base_url() . 'uploads/user_image/placeholder.png';
+        }
+
     }
     public function get_instructor_list()
     {
@@ -397,7 +436,7 @@ class User_model extends CI_Model
         $stripe_info = array();
         $stripe_keys = array(
             'public_live_key' => html_escape($this->input->post('stripe_public_key')),
-            'secret_live_key' => html_escape($this->input->post('stripe_secret_key'))
+            'secret_live_key' => html_escape($this->input->post('stripe_secret_key')),
         );
         array_push($stripe_info, $stripe_keys);
         $data['stripe_keys'] = json_encode($stripe_info);
@@ -405,7 +444,8 @@ class User_model extends CI_Model
         $this->db->update('users', $data);
     }
 
-    public function update_instructor_razorpay_settings($user_id = ''){
+    public function update_instructor_razorpay_settings($user_id = '')
+    {
         $user_details = $this->get_all_user($user_id)->row_array();
         $payment_keys = json_decode($user_details['payment_keys'], true);
         // Update razorpay keys
@@ -464,7 +504,6 @@ class User_model extends CI_Model
             redirect(site_url('user/become_an_instructor'), 'refresh');
         }
     }
-
 
     // GET INSTRUCTOR APPLICATIONS
     public function get_applications($id = "", $type = "")
@@ -541,7 +580,7 @@ class User_model extends CI_Model
         }
 
         $permission_data['admin_id'] = $admin_id;
-        $previous_permissions = json_decode($this->get_admins_permission_json($permission_data['admin_id']), TRUE);
+        $previous_permissions = json_decode($this->get_admins_permission_json($permission_data['admin_id']), true);
 
         if (in_array($module, $previous_permissions)) {
             $new_permission = array();

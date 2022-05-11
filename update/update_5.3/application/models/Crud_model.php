@@ -8,7 +8,7 @@ if (file_exists("application/aws-module/aws-autoloader.php")) {
 class Crud_model extends CI_Model
 {
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
         /*cache control*/
@@ -38,10 +38,10 @@ class Crud_model extends CI_Model
 
     public function add_category()
     {
-        $data['code']   = html_escape($this->input->post('code'));
-        $data['name']   = html_escape($this->input->post('name'));
+        $data['code'] = html_escape($this->input->post('code'));
+        $data['name'] = html_escape($this->input->post('name'));
         $data['parent'] = html_escape($this->input->post('parent'));
-        $data['slug']   = slugify(html_escape($this->input->post('name')));
+        $data['slug'] = slugify(html_escape($this->input->post('name')));
 
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('name', $data['name']);
@@ -78,9 +78,9 @@ class Crud_model extends CI_Model
 
     public function edit_category($param1)
     {
-        $data['name']   = html_escape($this->input->post('name'));
+        $data['name'] = html_escape($this->input->post('name'));
         $data['parent'] = html_escape($this->input->post('parent'));
-        $data['slug']   = slugify(html_escape($this->input->post('name')));
+        $data['slug'] = slugify(html_escape($this->input->post('name')));
 
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('name', $data['name']);
@@ -164,7 +164,7 @@ class Crud_model extends CI_Model
     public function get_revenue_by_user_type($timestamp_start = "", $timestamp_end = "", $revenue_type = "")
     {
         $course_ids = array();
-        $courses    = array();
+        $courses = array();
         $admin_details = $this->user_model->get_admin_details()->row_array();
         if ($revenue_type == 'admin_revenue') {
             $this->db->where('date_added >=', $timestamp_start);
@@ -193,7 +193,7 @@ class Crud_model extends CI_Model
     public function get_instructor_revenue($user_id = "", $timestamp_start = "", $timestamp_end = "")
     {
         $course_ids = array();
-        $courses    = array();
+        $courses = array();
 
         $multi_instructor_course_ids = $this->multi_instructor_course_ids_for_an_instructor($user_id);
 
@@ -260,7 +260,7 @@ class Crud_model extends CI_Model
         $updater = array(
             'status' => 1,
             'payment_type' => $payment_type,
-            'last_modified' => strtotime(date('D, d-M-Y'))
+            'last_modified' => strtotime(date('D, d-M-Y')),
         );
         $this->db->where('id', $payout_id);
         $this->db->update('payout', $updater);
@@ -389,7 +389,7 @@ class Crud_model extends CI_Model
 
         array_push($paypal_info, $paypal);
 
-        $data['value']    =   json_encode($paypal_info);
+        $data['value'] = json_encode($paypal_info);
         $this->db->where('key', 'paypal');
         $this->db->update('settings', $data);
 
@@ -412,7 +412,7 @@ class Crud_model extends CI_Model
 
         array_push($stripe_info, $stripe);
 
-        $data['value']    =   json_encode($stripe_info);
+        $data['value'] = json_encode($stripe_info);
         $this->db->where('key', 'stripe_keys');
         $this->db->update('settings', $data);
 
@@ -421,7 +421,8 @@ class Crud_model extends CI_Model
         $this->db->update('settings', $data);
     }
 
-    public function update_razorpay_settings() {
+    public function update_razorpay_settings()
+    {
         // update razorpay keys
         $paytm_info = array();
         $razorpay['active'] = htmlspecialchars($this->input->post('razorpay_active'));
@@ -431,7 +432,7 @@ class Crud_model extends CI_Model
 
         array_push($paytm_info, $razorpay);
 
-        $data['value']    =   json_encode($paytm_info);
+        $data['value'] = json_encode($paytm_info);
         $this->db->where('key', 'razorpay_keys');
         $this->db->update('settings', $data);
 
@@ -564,7 +565,7 @@ class Crud_model extends CI_Model
         return $course_id;
     }
 
-    function add_shortcut_course($param1 = "")
+    public function add_shortcut_course($param1 = "")
     {
         $data['course_type'] = html_escape($this->input->post('course_type'));
         $data['title'] = html_escape($this->input->post('title'));
@@ -615,7 +616,7 @@ class Crud_model extends CI_Model
         }
     }
 
-    function trim_and_return_json($untrimmed_array)
+    public function trim_and_return_json($untrimmed_array)
     {
         $trimmed_array = array();
         if (sizeof($untrimmed_array) > 0) {
@@ -665,7 +666,6 @@ class Crud_model extends CI_Model
         } else {
             $data['is_top_course'] = 1;
         }
-
 
         if ($type == "save_to_draft") {
             $data['status'] = 'draft';
@@ -718,7 +718,7 @@ class Crud_model extends CI_Model
             }
         }
         $updater = array(
-            'status' => $status
+            'status' => $status,
         );
         $this->db->where('id', $course_id);
         $this->db->update('course', $updater);
@@ -744,10 +744,12 @@ class Crud_model extends CI_Model
     public function get_lesson_thumbnail_url($lesson_id)
     {
 
-        if (file_exists('uploads/thumbnails/lesson_thumbnails/' . $lesson_id . '.jpg'))
+        if (file_exists('uploads/thumbnails/lesson_thumbnails/' . $lesson_id . '.jpg')) {
             return base_url() . 'uploads/thumbnails/lesson_thumbnails/' . $lesson_id . '.jpg';
-        else
+        } else {
             return base_url() . 'uploads/thumbnails/thumbnail.png';
+        }
+
     }
 
     public function get_my_courses_by_category_id($category_id)
@@ -786,7 +788,6 @@ class Crud_model extends CI_Model
         $this->db->where('status', 'active');
         return $this->db->get('course');
     }
-
 
     public function get_course_by_id($course_id = "")
     {
@@ -1008,8 +1009,6 @@ class Crud_model extends CI_Model
         $this->db->where('section_id', $section_id);
         $this->db->delete('lesson');
 
-
-
         $course_details = $this->get_course_by_id($course_id)->row_array();
         $previous_sections = json_decode($course_details['section']);
 
@@ -1039,7 +1038,7 @@ class Crud_model extends CI_Model
     public function serialize_section($course_id, $serialization)
     {
         $updater = array(
-            'section' => $serialization
+            'section' => $serialization,
         );
         $this->db->where('id', $course_id);
         $this->db->update('course', $updater);
@@ -1117,8 +1116,8 @@ class Crud_model extends CI_Model
             }
             $duration_for_mobile_application_formatter = explode(':', $mobile_app_lesson_duration);
             $hour = sprintf('%02d', $duration_for_mobile_application_formatter[0]);
-            $min  = sprintf('%02d', $duration_for_mobile_application_formatter[1]);
-            $sec  = sprintf('%02d', $duration_for_mobile_application_formatter[2]);
+            $min = sprintf('%02d', $duration_for_mobile_application_formatter[1]);
+            $sec = sprintf('%02d', $duration_for_mobile_application_formatter[2]);
             $data['duration_for_mobile_application'] = $hour . ':' . $min . ':' . $sec;
             $data['video_type_for_mobile_application'] = 'html5';
             $data['video_url_for_mobile_application'] = $mobile_app_lesson_url;
@@ -1126,9 +1125,9 @@ class Crud_model extends CI_Model
             // SET MAXIMUM EXECUTION TIME 600
             ini_set('max_execution_time', '600');
 
-            $fileName           = $_FILES['video_file_for_amazon_s3']['name'];
-            $tmp                = explode('.', $fileName);
-            $fileExtension      = strtoupper(end($tmp));
+            $fileName = $_FILES['video_file_for_amazon_s3']['name'];
+            $tmp = explode('.', $fileName);
+            $fileExtension = strtoupper(end($tmp));
 
             $video_extensions = ['WEBM', 'MP4'];
             if (!in_array($fileExtension, $video_extensions)) {
@@ -1148,14 +1147,13 @@ class Crud_model extends CI_Model
             $region = get_settings('amazon_s3_region_name');
 
             $s3config = array(
-                'region'  => $region,
+                'region' => $region,
                 'version' => 'latest',
                 'credentials' => [
-                    'key'    => $access_key, //Put key here
-                    'secret' => $secret_key // Put Secret here
-                ]
+                    'key' => $access_key, //Put key here
+                    'secret' => $secret_key, // Put Secret here
+                ],
             );
-
 
             $tmpfile = $_FILES['video_file_for_amazon_s3'];
 
@@ -1164,9 +1162,9 @@ class Crud_model extends CI_Model
 
             $result = $s3->putObject([
                 'Bucket' => $bucket,
-                'Key'    => $key,
+                'Key' => $key,
                 'SourceFile' => $tmpfile['tmp_name'],
-                'ACL'   => 'public-read'
+                'ACL' => 'public-read',
             ]);
 
             $data['video_url'] = $result['ObjectURL'];
@@ -1187,7 +1185,7 @@ class Crud_model extends CI_Model
             // SET MAXIMUM EXECUTION TIME 600
             ini_set('max_execution_time', '600');
 
-            $fileName           = $_FILES['system_video_file']['name'];
+            $fileName = $_FILES['system_video_file']['name'];
 
             // CHECKING IF THE FILE IS AVAILABLE AND FILE SIZE IS VALID
             if (array_key_exists('system_video_file', $_FILES)) {
@@ -1201,8 +1199,8 @@ class Crud_model extends CI_Model
                 redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
             };
 
-            $tmp                = explode('.', $fileName);
-            $fileExtension      = strtoupper(end($tmp));
+            $tmp = explode('.', $fileName);
+            $fileExtension = strtoupper(end($tmp));
 
             $video_extensions = ['WEBM', 'MP4'];
 
@@ -1212,14 +1210,12 @@ class Crud_model extends CI_Model
             }
 
             // custom random name of the video file
-            $uploadable_video_file    =  md5(uniqid(rand(), true)) . '.' . strtolower($fileExtension);
+            $uploadable_video_file = md5(uniqid(rand(), true)) . '.' . strtolower($fileExtension);
 
             if ($this->input->post('system_video_file_duration') == "") {
                 $this->session->set_flashdata('error_message', get_phrase('invalid_lesson_duration'));
                 redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
             }
-
-
 
             $tmp_video_file = $_FILES['system_video_file']['tmp_name'];
 
@@ -1242,7 +1238,7 @@ class Crud_model extends CI_Model
             $data['duration_for_mobile_application'] = $hour . ':' . $min . ':' . $sec;
             $data['video_type_for_mobile_application'] = "html5";
             $data['video_url_for_mobile_application'] = site_url($video_file_path);
-        }elseif($lesson_type == 'text' && $attachment_type == 'description'){
+        } elseif ($lesson_type == 'text' && $attachment_type == 'description') {
             $data['attachment'] = htmlspecialchars($this->input->post('text_description'));
         } else {
             if ($attachment_type == 'iframe') {
@@ -1256,10 +1252,10 @@ class Crud_model extends CI_Model
                     $this->session->set_flashdata('error_message', get_phrase('invalid_attachment'));
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                 } else {
-                    $fileName           = $_FILES['attachment']['name'];
-                    $tmp                = explode('.', $fileName);
-                    $fileExtension      = end($tmp);
-                    $uploadable_file    =  md5(uniqid(rand(), true)) . '.' . $fileExtension;
+                    $fileName = $_FILES['attachment']['name'];
+                    $tmp = explode('.', $fileName);
+                    $fileExtension = end($tmp);
+                    $uploadable_file = md5(uniqid(rand(), true)) . '.' . $fileExtension;
                     $data['attachment'] = $uploadable_file;
 
                     if (!file_exists('uploads/lesson_files')) {
@@ -1273,7 +1269,6 @@ class Crud_model extends CI_Model
         $data['date_added'] = strtotime(date('D, d-M-Y'));
         $data['summary'] = htmlspecialchars($this->input->post('summary'));
         $data['is_free'] = htmlspecialchars($this->input->post('free_lesson'));
-
 
         $this->db->insert('lesson', $data);
         $inserted_id = $this->db->insert_id();
@@ -1368,8 +1363,8 @@ class Crud_model extends CI_Model
             }
             $duration_for_mobile_application_formatter = explode(':', $mobile_app_lesson_duration);
             $hour = sprintf('%02d', $duration_for_mobile_application_formatter[0]);
-            $min  = sprintf('%02d', $duration_for_mobile_application_formatter[1]);
-            $sec  = sprintf('%02d', $duration_for_mobile_application_formatter[2]);
+            $min = sprintf('%02d', $duration_for_mobile_application_formatter[1]);
+            $sec = sprintf('%02d', $duration_for_mobile_application_formatter[2]);
             $data['duration_for_mobile_application'] = $hour . ':' . $min . ':' . $sec;
             $data['video_type_for_mobile_application'] = 'html5';
             $data['video_url_for_mobile_application'] = $mobile_app_lesson_url;
@@ -1378,9 +1373,9 @@ class Crud_model extends CI_Model
             ini_set('max_execution_time', '600');
 
             if (isset($_FILES['video_file_for_amazon_s3']) && !empty($_FILES['video_file_for_amazon_s3']['name'])) {
-                $fileName           = $_FILES['video_file_for_amazon_s3']['name'];
-                $tmp                = explode('.', $fileName);
-                $fileExtension      = strtoupper(end($tmp));
+                $fileName = $_FILES['video_file_for_amazon_s3']['name'];
+                $tmp = explode('.', $fileName);
+                $fileExtension = strtoupper(end($tmp));
 
                 $video_extensions = ['WEBM', 'MP4'];
                 if (!in_array($fileExtension, $video_extensions)) {
@@ -1395,14 +1390,13 @@ class Crud_model extends CI_Model
                 $region = get_settings('amazon_s3_region_name');
 
                 $s3config = array(
-                    'region'  => $region,
+                    'region' => $region,
                     'version' => 'latest',
                     'credentials' => [
-                        'key'    => $access_key, //Put key here
-                        'secret' => $secret_key // Put Secret here
-                    ]
+                        'key' => $access_key, //Put key here
+                        'secret' => $secret_key, // Put Secret here
+                    ],
                 );
-
 
                 $tmpfile = $_FILES['video_file_for_amazon_s3'];
 
@@ -1411,9 +1405,9 @@ class Crud_model extends CI_Model
 
                 $result = $s3->putObject([
                     'Bucket' => $bucket,
-                    'Key'    => $key,
+                    'Key' => $key,
                     'SourceFile' => $tmpfile['tmp_name'],
-                    'ACL'   => 'public-read'
+                    'ACL' => 'public-read',
                 ]);
 
                 $data['video_url'] = $result['ObjectURL'];
@@ -1423,7 +1417,6 @@ class Crud_model extends CI_Model
             $data['video_type'] = 'amazon';
             $data['lesson_type'] = 'video';
             $data['attachment_type'] = 'file';
-
 
             if ($this->input->post('amazon_s3_duration') == "") {
                 $this->session->set_flashdata('error_message', get_phrase('invalid_lesson_duration'));
@@ -1449,7 +1442,7 @@ class Crud_model extends CI_Model
                 unlink('uploads/lesson_files/videos/' . end($video_file));
                 //end delete previews video
 
-                $fileName           = $_FILES['system_video_file']['name'];
+                $fileName = $_FILES['system_video_file']['name'];
 
                 // CHECKING IF THE FILE IS AVAILABLE AND FILE SIZE IS VALID
                 if (array_key_exists('system_video_file', $_FILES)) {
@@ -1463,8 +1456,8 @@ class Crud_model extends CI_Model
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                 };
 
-                $tmp                = explode('.', $fileName);
-                $fileExtension      = strtoupper(end($tmp));
+                $tmp = explode('.', $fileName);
+                $fileExtension = strtoupper(end($tmp));
 
                 $video_extensions = ['WEBM', 'MP4'];
                 if (!in_array($fileExtension, $video_extensions)) {
@@ -1473,8 +1466,7 @@ class Crud_model extends CI_Model
                 }
 
                 // custom random name of the video file
-                $uploadable_video_file    =  md5(uniqid(rand(), true)) . '.' . strtolower($fileExtension);
-
+                $uploadable_video_file = md5(uniqid(rand(), true)) . '.' . strtolower($fileExtension);
 
                 $tmp_video_file = $_FILES['system_video_file']['tmp_name'];
 
@@ -1492,7 +1484,6 @@ class Crud_model extends CI_Model
             $data['lesson_type'] = 'video';
             $data['attachment_type'] = 'file';
 
-
             if ($this->input->post('system_video_file_duration') == "") {
                 $this->session->set_flashdata('error_message', get_phrase('invalid_lesson_duration'));
                 redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
@@ -1507,7 +1498,7 @@ class Crud_model extends CI_Model
             $data['duration_for_mobile_application'] = $hour . ':' . $min . ':' . $sec;
             $data['video_type_for_mobile_application'] = "html5";
 
-        }elseif($lesson_type == 'text' && $attachment_type == 'description'){
+        } elseif ($lesson_type == 'text' && $attachment_type == 'description') {
             $data['attachment'] = htmlspecialchars($this->input->post('text_description'));
         } else {
             if ($attachment_type == 'iframe') {
@@ -1523,10 +1514,10 @@ class Crud_model extends CI_Model
                         unlink('uploads/lesson_files/' . $previous_data['attachment']);
                     }
 
-                    $fileName           = $_FILES['attachment']['name'];
-                    $tmp                = explode('.', $fileName);
-                    $fileExtension      = end($tmp);
-                    $uploadable_file    =  md5(uniqid(rand(), true)) . '.' . $fileExtension;
+                    $fileName = $_FILES['attachment']['name'];
+                    $tmp = explode('.', $fileName);
+                    $fileExtension = end($tmp);
+                    $uploadable_file = md5(uniqid(rand(), true)) . '.' . $fileExtension;
                     $data['attachment'] = $uploadable_file;
                     $data['video_type'] = "";
                     $data['duration'] = "";
@@ -1577,7 +1568,6 @@ class Crud_model extends CI_Model
         $data['value'] = $this->input->post('cookie_policy');
         $this->db->where('key', 'cookie_policy');
         $this->db->update('frontend_settings', $data);
-
 
         $data['value'] = $this->input->post('about_us');
         $this->db->where('key', 'about_us');
@@ -1670,7 +1660,7 @@ class Crud_model extends CI_Model
     public function handleWishList($course_id)
     {
         $wishlists = array();
-        $user_details = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
+        $user_details = $this->user_model->get_user($this->session->userdata('user_id'));
         if ($user_details['wishlist'] == "") {
             array_push($wishlists, $course_id);
         } else {
@@ -1699,7 +1689,7 @@ class Crud_model extends CI_Model
     {
         if ($this->session->userdata('user_login') == 1) {
             $wishlists = array();
-            $user_details = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
+            $user_details = $this->user_model->get_user($this->session->userdata('user_id'));
             $wishlists = json_decode($user_details['wishlist']);
             if (in_array($course_id, $wishlists)) {
                 return true;
@@ -1744,7 +1734,7 @@ class Crud_model extends CI_Model
     public function enrol_a_student_manually()
     {
         $data['course_id'] = $this->input->post('course_id');
-        $data['user_id']   = $this->input->post('user_id');
+        $data['user_id'] = $this->input->post('user_id');
         if ($this->db->get_where('enrol', $data)->num_rows() > 0) {
             $this->session->set_flashdata('error_message', get_phrase('student_has_already_been_enrolled_to_this_course'));
         } else {
@@ -1757,7 +1747,7 @@ class Crud_model extends CI_Model
     public function shortcut_enrol_a_student_manually()
     {
         $data['course_id'] = $this->input->post('course_id');
-        $data['user_id']   = $this->input->post('user_id');
+        $data['user_id'] = $this->input->post('user_id');
         if ($this->db->get_where('enrol', $data)->num_rows() > 0) {
             $response['status'] = 0;
             $response['message'] = get_phrase('student_has_already_been_enrolled_to_this_course');
@@ -1777,7 +1767,7 @@ class Crud_model extends CI_Model
         $course_details = $this->get_course_by_id($course_id)->row_array();
         if ($course_details['is_free_course'] == 1) {
             $data['course_id'] = $course_id;
-            $data['user_id']   = $user_id;
+            $data['user_id'] = $user_id;
             if ($this->db->get_where('enrol', $data)->num_rows() > 0) {
                 $this->session->set_flashdata('error_message', get_phrase('student_has_already_been_enrolled_to_this_course'));
             } else {
@@ -1866,7 +1856,6 @@ class Crud_model extends CI_Model
         }
     }
 
-
     public function get_courses_of_wishlists_by_search_string($search_string)
     {
         $wishlists = $this->getWishLists();
@@ -1933,9 +1922,9 @@ class Crud_model extends CI_Model
     public function get_user_specific_rating($ratable_type = "", $ratable_id = "")
     {
         $reviews = $this->db->get_where('rating', array('ratable_type' => $ratable_type, 'user_id' => $this->session->userdata('user_id'), 'ratable_id' => $ratable_id));
-        if($reviews->num_rows() > 0){
+        if ($reviews->num_rows() > 0) {
             return $reviews->row_array();
-        }else{
+        } else {
             return array('rating' => 0);
         }
     }
@@ -1967,13 +1956,13 @@ class Crud_model extends CI_Model
     {
         $number_of_user_rated = $this->db->get_where('rating', array(
             'ratable_type' => $ratable_type,
-            'ratable_id'   => $ratable_id
+            'ratable_id' => $ratable_id,
         ))->num_rows();
 
         $number_of_user_rated_the_specific_rating = $this->db->get_where('rating', array(
             'ratable_type' => $ratable_type,
-            'ratable_id'   => $ratable_id,
-            'rating'       => $rating
+            'ratable_id' => $ratable_id,
+            'rating' => $rating,
         ))->num_rows();
 
         //return $number_of_user_rated.' '.$number_of_user_rated_the_specific_rating;
@@ -1986,53 +1975,55 @@ class Crud_model extends CI_Model
     }
 
     ////////private message//////
-    function send_new_private_message()
+    public function send_new_private_message()
     {
-        $message    = $this->input->post('message');
-        $timestamp  = strtotime(date("Y-m-d H:i:s"));
+        $message = $this->input->post('message');
+        $timestamp = strtotime(date("Y-m-d H:i:s"));
 
-        $receiver   = $this->input->post('receiver');
-        $sender     = $this->session->userdata('user_id');
+        $receiver = $this->input->post('receiver');
+        $sender = $this->session->userdata('user_id');
 
         //check if the thread between those 2 users exists, if not create new thread
         $num1 = $this->db->get_where('message_thread', array('sender' => $sender, 'receiver' => $receiver))->num_rows();
         $num2 = $this->db->get_where('message_thread', array('sender' => $receiver, 'receiver' => $sender))->num_rows();
         if ($num1 == 0 && $num2 == 0) {
-            $message_thread_code                        = substr(md5(rand(100000000, 20000000000)), 0, 15);
+            $message_thread_code = substr(md5(rand(100000000, 20000000000)), 0, 15);
             $data_message_thread['message_thread_code'] = $message_thread_code;
-            $data_message_thread['sender']              = $sender;
-            $data_message_thread['receiver']            = $receiver;
+            $data_message_thread['sender'] = $sender;
+            $data_message_thread['receiver'] = $receiver;
             $this->db->insert('message_thread', $data_message_thread);
         }
-        if ($num1 > 0)
+        if ($num1 > 0) {
             $message_thread_code = $this->db->get_where('message_thread', array('sender' => $sender, 'receiver' => $receiver))->row()->message_thread_code;
-        if ($num2 > 0)
+        }
+
+        if ($num2 > 0) {
             $message_thread_code = $this->db->get_where('message_thread', array('sender' => $receiver, 'receiver' => $sender))->row()->message_thread_code;
+        }
 
-
-        $data_message['message_thread_code']    = $message_thread_code;
-        $data_message['message']                = $message;
-        $data_message['sender']                 = $sender;
-        $data_message['timestamp']              = $timestamp;
+        $data_message['message_thread_code'] = $message_thread_code;
+        $data_message['message'] = $message;
+        $data_message['sender'] = $sender;
+        $data_message['timestamp'] = $timestamp;
         $this->db->insert('message', $data_message);
 
         return $message_thread_code;
     }
 
-    function send_reply_message($message_thread_code)
+    public function send_reply_message($message_thread_code)
     {
-        $message    = html_escape($this->input->post('message'));
-        $timestamp  = strtotime(date("Y-m-d H:i:s"));
-        $sender     = $this->session->userdata('user_id');
+        $message = html_escape($this->input->post('message'));
+        $timestamp = strtotime(date("Y-m-d H:i:s"));
+        $sender = $this->session->userdata('user_id');
 
-        $data_message['message_thread_code']    = $message_thread_code;
-        $data_message['message']                = $message;
-        $data_message['sender']                 = $sender;
-        $data_message['timestamp']              = $timestamp;
+        $data_message['message_thread_code'] = $message_thread_code;
+        $data_message['message'] = $message;
+        $data_message['sender'] = $sender;
+        $data_message['timestamp'] = $timestamp;
         $this->db->insert('message', $data_message);
     }
 
-    function mark_thread_messages_read($message_thread_code)
+    public function mark_thread_messages_read($message_thread_code)
     {
         // mark read only the oponnent messages of this thread, not currently logged in user's sent messages
         $current_user = $this->session->userdata('user_id');
@@ -2041,14 +2032,16 @@ class Crud_model extends CI_Model
         $this->db->update('message', array('read_status' => 1));
     }
 
-    function count_unread_message_of_thread($message_thread_code)
+    public function count_unread_message_of_thread($message_thread_code)
     {
         $unread_message_counter = 0;
         $current_user = $this->session->userdata('user_id');
         $messages = $this->db->get_where('message', array('message_thread_code' => $message_thread_code))->result_array();
         foreach ($messages as $row) {
-            if ($row['sender'] != $current_user && $row['read_status'] == '0')
+            if ($row['sender'] != $current_user && $row['read_status'] == '0') {
                 $unread_message_counter++;
+            }
+
         }
         return $unread_message_counter;
     }
@@ -2061,7 +2054,7 @@ class Crud_model extends CI_Model
         return $this->db->get('message');
     }
 
-    function curl_request($code = '')
+    public function curl_request($code = '')
     {
 
         $product_code = $code;
@@ -2071,8 +2064,8 @@ class Crud_model extends CI_Model
         $curl = curl_init($url);
 
         //setting the header for the rest of the api
-        $bearer   = 'bearer ' . $personal_token;
-        $header   = array();
+        $bearer = 'bearer ' . $personal_token;
+        $header = array();
         $header[] = 'Content-length: 0';
         $header[] = 'Content-type: application/json; charset=utf-8';
         $header[] = 'Authorization: ' . $bearer;
@@ -2098,27 +2091,26 @@ class Crud_model extends CI_Model
         }
     }
 
-
     // version 1.3
-    function get_currencies()
+    public function get_currencies()
     {
         return $this->db->get('currency')->result_array();
     }
 
-    function get_paypal_supported_currencies()
+    public function get_paypal_supported_currencies()
     {
         $this->db->where('paypal_supported', 1);
         return $this->db->get('currency')->result_array();
     }
 
-    function get_stripe_supported_currencies()
+    public function get_stripe_supported_currencies()
     {
         $this->db->where('stripe_supported', 1);
         return $this->db->get('currency')->result_array();
     }
 
     // version 1.4
-    function filter_course($selected_category_id = "", $selected_price = "", $selected_level = "", $selected_language = "", $selected_rating = "")
+    public function filter_course($selected_category_id = "", $selected_price = "", $selected_level = "", $selected_language = "", $selected_rating = "")
     {
         //echo $selected_category_id.' '.$selected_price.' '.$selected_level.' '.$selected_language.' '.$selected_rating;
 
@@ -2153,7 +2145,7 @@ class Crud_model extends CI_Model
 
         foreach ($courses as $course) {
             if ($selected_rating != "all") {
-                $total_rating =  $this->get_ratings('course', $course['id'], true)->row()->rating;
+                $total_rating = $this->get_ratings('course', $course['id'], true)->row()->rating;
                 $number_of_ratings = $this->get_ratings('course', $course['id'])->num_rows();
                 if ($number_of_ratings > 0) {
                     $average_ceil_rating = ceil($total_rating / $number_of_ratings);
@@ -2236,7 +2228,7 @@ class Crud_model extends CI_Model
         $sections = json_decode($section_json);
         foreach ($sections as $key => $value) {
             $updater = array(
-                'order' => $key + 1
+                'order' => $key + 1,
             );
             $this->db->where('id', $value);
             $this->db->update('section', $updater);
@@ -2248,7 +2240,7 @@ class Crud_model extends CI_Model
         $lessons = json_decode($lesson_json);
         foreach ($lessons as $key => $value) {
             $updater = array(
-                'order' => $key + 1
+                'order' => $key + 1,
             );
             $this->db->where('id', $value);
             $this->db->update('lesson', $updater);
@@ -2259,7 +2251,7 @@ class Crud_model extends CI_Model
         $questions = json_decode($question_json);
         foreach ($questions as $key => $value) {
             $updater = array(
-                'order' => $key + 1
+                'order' => $key + 1,
             );
             $this->db->where('id', $value);
             $this->db->update('question', $updater);
@@ -2352,7 +2344,7 @@ class Crud_model extends CI_Model
         }
     }
     // multiple_choice_question crud functions
-    function add_multiple_choice_question($quiz_id)
+    public function add_multiple_choice_question($quiz_id)
     {
         if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
             return false;
@@ -2367,17 +2359,17 @@ class Crud_model extends CI_Model
         } else {
             $correct_answers = $this->input->post('correct_answers');
         }
-        $data['quiz_id']            = $quiz_id;
-        $data['title']              = html_escape($this->input->post('title'));
-        $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
-        $data['type']               = 'multiple_choice';
-        $data['options']            = json_encode($this->input->post('options'));
-        $data['correct_answers']    = json_encode($correct_answers);
+        $data['quiz_id'] = $quiz_id;
+        $data['title'] = html_escape($this->input->post('title'));
+        $data['number_of_options'] = html_escape($this->input->post('number_of_options'));
+        $data['type'] = 'multiple_choice';
+        $data['options'] = json_encode($this->input->post('options'));
+        $data['correct_answers'] = json_encode($correct_answers);
         $this->db->insert('question', $data);
         return true;
     }
     // update multiple choice question
-    function update_multiple_choice_question($question_id)
+    public function update_multiple_choice_question($question_id)
     {
         if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
             return false;
@@ -2394,30 +2386,30 @@ class Crud_model extends CI_Model
             $correct_answers = $this->input->post('correct_answers');
         }
 
-        $data['title']              = html_escape($this->input->post('title'));
-        $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
-        $data['type']               = 'multiple_choice';
-        $data['options']            = json_encode($this->input->post('options'));
-        $data['correct_answers']    = json_encode($correct_answers);
+        $data['title'] = html_escape($this->input->post('title'));
+        $data['number_of_options'] = html_escape($this->input->post('number_of_options'));
+        $data['type'] = 'multiple_choice';
+        $data['options'] = json_encode($this->input->post('options'));
+        $data['correct_answers'] = json_encode($correct_answers);
         $this->db->where('id', $question_id);
         $this->db->update('question', $data);
         return true;
     }
 
-    function delete_quiz_question($question_id)
+    public function delete_quiz_question($question_id)
     {
         $this->db->where('id', $question_id);
         $this->db->delete('question');
         return true;
     }
 
-    function get_application_details()
+    public function get_application_details()
     {
         $purchase_code = get_settings('purchase_code');
         $returnable_array = array(
             'purchase_code_status' => get_phrase('not_found'),
-            'support_expiry_date'  => get_phrase('not_found'),
-            'customer_name'        => get_phrase('not_found')
+            'support_expiry_date' => get_phrase('not_found'),
+            'customer_name' => get_phrase('not_found'),
         );
 
         $personal_token = "gC0J1ZpY53kRpynNe4g2rWT5s4MW56Zg";
@@ -2425,8 +2417,8 @@ class Crud_model extends CI_Model
         $curl = curl_init($url);
 
         //setting the header for the rest of the api
-        $bearer   = 'bearer ' . $personal_token;
-        $header   = array();
+        $bearer = 'bearer ' . $personal_token;
+        $header = array();
         $header[] = 'Content-length: 0';
         $header[] = 'Content-type: application/json; charset=utf-8';
         $header[] = 'Authorization: ' . $bearer;
@@ -2448,35 +2440,36 @@ class Crud_model extends CI_Model
         if (count($response['verify-purchase']) > 0) {
 
             //print_r($response);
-            $item_name         = $response['verify-purchase']['item_name'];
-            $purchase_time       = $response['verify-purchase']['created_at'];
-            $customer         = $response['verify-purchase']['buyer'];
-            $licence_type       = $response['verify-purchase']['licence'];
-            $support_until      = $response['verify-purchase']['supported_until'];
-            $customer         = $response['verify-purchase']['buyer'];
+            $item_name = $response['verify-purchase']['item_name'];
+            $purchase_time = $response['verify-purchase']['created_at'];
+            $customer = $response['verify-purchase']['buyer'];
+            $licence_type = $response['verify-purchase']['licence'];
+            $support_until = $response['verify-purchase']['supported_until'];
+            $customer = $response['verify-purchase']['buyer'];
 
-            $purchase_date      = date("d M, Y", strtotime($purchase_time));
+            $purchase_date = date("d M, Y", strtotime($purchase_time));
 
-            $todays_timestamp     = strtotime(date("d M, Y"));
+            $todays_timestamp = strtotime(date("d M, Y"));
             $support_expiry_timestamp = strtotime($support_until);
 
-            $support_expiry_date  = date("d M, Y", $support_expiry_timestamp);
+            $support_expiry_date = date("d M, Y", $support_expiry_timestamp);
 
-            if ($todays_timestamp > $support_expiry_timestamp)
-                $support_status    = get_phrase('expired');
-            else
-                $support_status    = get_phrase('valid');
+            if ($todays_timestamp > $support_expiry_timestamp) {
+                $support_status = get_phrase('expired');
+            } else {
+                $support_status = get_phrase('valid');
+            }
 
             $returnable_array = array(
                 'purchase_code_status' => $support_status,
-                'support_expiry_date'  => $support_expiry_date,
-                'customer_name'        => $customer
+                'support_expiry_date' => $support_expiry_date,
+                'customer_name' => $customer,
             );
         } else {
             $returnable_array = array(
                 'purchase_code_status' => 'invalid',
-                'support_expiry_date'  => 'invalid',
-                'customer_name'        => 'invalid'
+                'support_expiry_date' => 'invalid',
+                'customer_name' => 'invalid',
             );
         }
 
@@ -2486,7 +2479,7 @@ class Crud_model extends CI_Model
     // Version 2.2 codes
 
     // This function is responsible for retreving all the language file from language folder
-    function get_all_languages()
+    public function get_all_languages()
     {
         $language_files = array();
         $all_files = $this->get_list_of_language_files();
@@ -2501,7 +2494,7 @@ class Crud_model extends CI_Model
     }
 
     // This function is responsible for showing all the installed themes
-    function get_installed_themes($dir = APPPATH . '/views/frontend')
+    public function get_installed_themes($dir = APPPATH . '/views/frontend')
     {
         $result = array();
         $cdir = $files = preg_grep('/^([^.])/', scandir($dir));
@@ -2515,7 +2508,7 @@ class Crud_model extends CI_Model
         return $result;
     }
     // This function is responsible for showing all the uninstalled themes inside themes folder
-    function get_uninstalled_themes($dir = 'themes')
+    public function get_uninstalled_themes($dir = 'themes')
     {
         $result = array();
         $cdir = $files = preg_grep('/^([^.])/', scandir($dir));
@@ -2527,7 +2520,7 @@ class Crud_model extends CI_Model
         return $result;
     }
     // This function is responsible for retreving all the language file from language folder
-    function get_list_of_language_files($dir = APPPATH . '/language', &$results = array())
+    public function get_list_of_language_files($dir = APPPATH . '/language', &$results = array())
     {
         $files = scandir($dir);
         foreach ($files as $key => $value) {
@@ -2543,7 +2536,7 @@ class Crud_model extends CI_Model
     }
 
     // This function is responsible for retreving all the files and folder
-    function get_list_of_directories_and_files($dir = APPPATH, &$results = array())
+    public function get_list_of_directories_and_files($dir = APPPATH, &$results = array())
     {
         $files = scandir($dir);
         foreach ($files as $key => $value) {
@@ -2558,15 +2551,18 @@ class Crud_model extends CI_Model
         return $results;
     }
 
-    function remove_files_and_folders($dir)
+    public function remove_files_and_folders($dir)
     {
         if (is_dir($dir)) {
             $objects = scandir($dir);
             foreach ($objects as $object) {
                 if ($object != "." && $object != "..") {
-                    if (filetype($dir . "/" . $object) == "dir")
+                    if (filetype($dir . "/" . $object) == "dir") {
                         $this->remove_files_and_folders($dir . "/" . $object);
-                    else unlink($dir . "/" . $object);
+                    } else {
+                        unlink($dir . "/" . $object);
+                    }
+
                 }
             }
             reset($objects);
@@ -2574,7 +2570,7 @@ class Crud_model extends CI_Model
         }
     }
 
-    function get_category_wise_courses($category_id = "")
+    public function get_category_wise_courses($category_id = "")
     {
         $category_details = $this->get_category_details_by_id($category_id)->row_array();
 
@@ -2587,7 +2583,7 @@ class Crud_model extends CI_Model
         return $this->db->get('course');
     }
 
-    function activate_theme($theme_to_active)
+    public function activate_theme($theme_to_active)
     {
         $data['value'] = $theme_to_active;
         $this->db->where('key', 'theme');
@@ -2595,12 +2591,12 @@ class Crud_model extends CI_Model
     }
 
     // code of mark this lesson as completed
-    function save_course_progress()
+    public function save_course_progress()
     {
         $lesson_id = $this->input->post('lesson_id');
         $progress = $this->input->post('progress');
-        $user_id   = $this->session->userdata('user_id');
-        $user_details  = $this->user_model->get_all_user($user_id)->row_array();
+        $user_id = $this->session->userdata('user_id');
+        $user_details = $this->user_model->get_all_user($user_id)->row_array();
         $watch_history = $user_details['watch_history'];
         $watch_history_array = array();
         if ($watch_history == '') {
@@ -2633,24 +2629,21 @@ class Crud_model extends CI_Model
         return $progress;
     }
 
-
-
     //FOR MOBILE
-    function enrol_to_free_course_mobile($course_id = "", $user_id = "")
+    public function enrol_to_free_course_mobile($course_id = "", $user_id = "")
     {
         $data['course_id'] = $course_id;
-        $data['user_id']   = $user_id;
+        $data['user_id'] = $user_id;
         $data['date_added'] = strtotime(date('D, d-M-Y'));
-        if ($this->db->get_where('course', array('id' => $course_id))->row('is_free_course') == 1) :
+        if ($this->db->get_where('course', array('id' => $course_id))->row('is_free_course') == 1):
             $this->db->insert('enrol', $data);
         endif;
     }
 
-    function check_course_enrolled($course_id = "", $user_id = "")
+    public function check_course_enrolled($course_id = "", $user_id = "")
     {
         return $this->db->get_where('enrol', array('course_id' => $course_id, 'user_id' => $user_id))->num_rows();
     }
-
 
     // GET PAYOUTS
     public function get_payouts($id = "", $type = "")
@@ -2687,7 +2680,7 @@ class Crud_model extends CI_Model
     {
         $checker = array(
             'user_id' => $id,
-            'status'  => 1
+            'status' => 1,
         );
         $this->db->order_by('id', 'DESC');
         $payouts = $this->db->get_where('payout', $checker)->result_array();
@@ -2724,7 +2717,7 @@ class Crud_model extends CI_Model
         $requested_withdrawal_amount = 0;
         $checker = array(
             'user_id' => $id,
-            'status' => 0
+            'status' => 0,
         );
         $payouts = $this->db->get_where('payout', $checker);
         if ($payouts->num_rows() > 0) {
@@ -2740,7 +2733,7 @@ class Crud_model extends CI_Model
         $requested_withdrawal_amount = 0;
         $checker = array(
             'user_id' => $id,
-            'status' => 0
+            'status' => 0,
         );
         $payouts = $this->db->get_where('payout', $checker);
 
@@ -2755,10 +2748,10 @@ class Crud_model extends CI_Model
 
         $requested_withdrawal_amount = $this->input->post('withdrawal_amount');
         if ($total_pending_amount > 0 && $total_pending_amount >= $requested_withdrawal_amount) {
-            $data['amount']     = $requested_withdrawal_amount;
-            $data['user_id']    = $this->session->userdata('user_id');
+            $data['amount'] = $requested_withdrawal_amount;
+            $data['user_id'] = $this->session->userdata('user_id');
             $data['date_added'] = strtotime(date('D, d M Y'));
-            $data['status']     = 0;
+            $data['status'] = 0;
             $this->db->insert('payout', $data);
             $this->session->set_flashdata('flash_message', get_phrase('withdrawal_requested'));
         } else {
@@ -2771,7 +2764,7 @@ class Crud_model extends CI_Model
     {
         $checker = array(
             'user_id' => $this->session->userdata('user_id'),
-            'status' => 0
+            'status' => 0,
         );
         $requested_withdrawal = $this->db->get_where('payout', $checker);
         if ($requested_withdrawal->num_rows() > 0) {
@@ -2823,19 +2816,19 @@ class Crud_model extends CI_Model
             $url = 'https://www.google.com/recaptcha/api/siteverify';
             $data = array(
                 'secret' => get_frontend_settings('recaptcha_secretkey'),
-                'response' => $_POST["g-recaptcha-response"]
+                'response' => $_POST["g-recaptcha-response"],
             );
             $query = http_build_query($data);
             $options = array(
                 'http' => array(
                     'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
-                        "Content-Length: " . strlen($query) . "\r\n" .
-                        "User-Agent:MyAgent/1.0\r\n",
+                    "Content-Length: " . strlen($query) . "\r\n" .
+                    "User-Agent:MyAgent/1.0\r\n",
                     'method' => 'POST',
-                    'content' => $query
-                )
+                    'content' => $query,
+                ),
             );
-            $context  = stream_context_create($options);
+            $context = stream_context_create($options);
             $verify = file_get_contents($url, false, $context);
             $captcha_success = json_decode($verify);
             if ($captcha_success->success == false) {
@@ -2848,7 +2841,7 @@ class Crud_model extends CI_Model
         }
     }
 
-    function get_course_by_user($user_id = "", $course_type = "")
+    public function get_course_by_user($user_id = "", $course_type = "")
     {
         $multi_instructor_course_ids = $this->multi_instructor_course_ids_for_an_instructor($user_id);
         if ($course_type != "") {
@@ -2960,13 +2953,13 @@ class Crud_model extends CI_Model
     // GET DISCOUNTED PRICE AFTER APPLYING COUPON
     public function get_discounted_price_after_applying_coupon($coupon_code)
     {
-        $total_price  = 0;
+        $total_price = 0;
         foreach ($this->session->userdata('cart_items') as $cart_item) {
             $course_details = $this->crud_model->get_course_by_id($cart_item)->row_array();
             if ($course_details['discount_flag'] == 1) {
                 $total_price += $course_details['discounted_price'];
             } else {
-                $total_price  += $course_details['price'];
+                $total_price += $course_details['price'];
             }
         }
 
@@ -2981,23 +2974,25 @@ class Crud_model extends CI_Model
         return $total_price > 0 ? $total_price : 0;
     }
 
-    function get_free_lessons($lesson_id = ""){
-        if($lesson_id != ""){
+    public function get_free_lessons($lesson_id = "")
+    {
+        if ($lesson_id != "") {
             $this->db->where('id', $lesson_id);
         }
         $this->db->where('is_free', 1);
         return $this->db->get('lesson');
     }
 
-    function update_watch_history($course_id = "", $lesson_id = ""){
+    public function update_watch_history($course_id = "", $lesson_id = "")
+    {
         $user_id = $this->session->userdata('user_id');
         $query = $this->db->get_where('watch_histories', array('course_id' => $course_id, 'student_id' => $user_id));
 
-        if($course_id != "" && $lesson_id != ""){
-            if($query->num_rows() > 0){
+        if ($course_id != "" && $lesson_id != "") {
+            if ($query->num_rows() > 0) {
                 $this->db->where('watch_history_id', $query->row('watch_history_id'));
                 $this->db->update('watch_histories', array('watching_lesson_id' => $lesson_id, 'date_updated' => time()));
-            }else{
+            } else {
                 $data['course_id'] = $course_id;
                 $data['student_id'] = $user_id;
                 $data['watching_lesson_id'] = $lesson_id;
@@ -3005,32 +3000,9 @@ class Crud_model extends CI_Model
                 $this->db->insert('watch_histories', $data);
             }
             return $lesson_id;
-        }elseif($query->num_rows() > 0){
+        } elseif ($query->num_rows() > 0) {
             return $query->row('watching_lesson_id');
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

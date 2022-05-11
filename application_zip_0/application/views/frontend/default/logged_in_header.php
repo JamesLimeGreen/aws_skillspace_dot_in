@@ -1,5 +1,5 @@
 <?php
-$user_details = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
+$user_details = $this->user_model->get_user($this->session->userdata('user_id'));
 ?>
 <section class="menu-area">
     <div class="container-xl">
@@ -13,10 +13,10 @@ $user_details = $this->user_model->get_user($this->session->userdata('user_id'))
                     </ul>
 
                     <a href="<?php echo site_url(''); ?>" class="navbar-brand" href="#">
-                        <img src="<?php echo base_url('uploads/system/'.get_frontend_settings('dark_logo')); ?>" alt="" height="35">
+                        <img src="<?php echo base_url('uploads/system/' . get_frontend_settings('dark_logo')); ?>" alt="" height="35">
                     </a>
 
-                    <?php include 'menu.php'; ?>
+                    <?php include 'menu.php';?>
 
 
                     <form class="inline-form" action="<?php echo site_url('home/search'); ?>" method="get" style="width: 100%;">
@@ -34,7 +34,7 @@ $user_details = $this->user_model->get_user($this->session->userdata('user_id'))
                                 <a href="<?php echo site_url('user'); ?>" style="border: 1px solid transparent; margin: 10px 10px; font-size: 14px; width: 100%; border-radius: 0;"><?php echo site_phrase('instructor'); ?></a>
                             </div>
                         </div>
-                    <?php endif; ?>
+                    <?php endif;?>
 
                     <div class="instructor-box menu-icon-box">
                         <div class="icon">
@@ -43,11 +43,11 @@ $user_details = $this->user_model->get_user($this->session->userdata('user_id'))
                     </div>
 
                     <div class="wishlist-box menu-icon-box" id = "wishlist_items">
-                        <?php include 'wishlist_items.php'; ?>
+                        <?php include 'wishlist_items.php';?>
                     </div>
 
                     <div class="cart-box menu-icon-box" id = "cart_items">
-                        <?php include 'cart_items.php'; ?>
+                        <?php include 'cart_items.php';?>
                     </div>
 
                     <?php //include 'notifications.php'; ?>
@@ -71,7 +71,7 @@ $user_details = $this->user_model->get_user($this->session->userdata('user_id'))
                                         <div class="user-details">
                                             <div class="user-name">
                                                 <span class="hi"><?php echo site_phrase('hi'); ?>,</span>
-                                                <?php echo $user_details['first_name'].' '.$user_details['last_name']; ?>
+                                                <?php echo $user_details['first_name'] . ' ' . $user_details['last_name']; ?>
                                             </div>
                                             <div class="user-email">
                                                 <span class="email"><?php echo $user_details['email']; ?></span>
