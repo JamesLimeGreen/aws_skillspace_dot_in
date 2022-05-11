@@ -15,10 +15,14 @@ class User_model extends CI_Model
         $this->output->set_header('Pragma: no-cache');
 
         if (!$this->firebaseAuth) {
-            $factory = (new Factory)
-                ->withServiceAccount('/home/ubuntu/credentials/firebase-auth.json')
-                ->withDatabaseUri('gs://skill-space-c31a2.appspot.com');
-            $this->firebaseAuth = $factory->createAuth();
+            try {
+                $factory = (new Factory)
+                    ->withServiceAccount('/home/ubuntu/credentials/firebase-auth.json')
+                    ->withDatabaseUri('gs://skill-space-c31a2.appspot.com');
+                $this->firebaseAuth = $factory->createAuth();
+            } catch (\Throwable$th) {
+                die("Firebase error" . $th->getMessage());
+            }
         }
     }
 
@@ -35,33 +39,37 @@ class User_model extends CI_Model
         // $this->db->where('role_id', 2);
         // return $this->db->get('users');
 
-        $user = $this->firebaseAuth->getUser($user_id);
-        $customClaims = $user->customClaims;
+        try {
+            $user = $this->firebaseAuth->getUser($user_id);
+            $customClaims = $user->customClaims;
 
-        return array(
-            "id" => $user_id,
-            "first_name" => $customClaims['first_name'],
-            "last_name" => $customClaims['last_name'],
-            "commission" => $customClaims['commission'],
-            "email" => $user->email,
-            "skills" => $customClaims['skills'],
-            "social_links" => $customClaims['social_links'],
-            "biography" => $customClaims['biography'],
-            "role_id" => $customClaims['role_id'],
-            "date_added" => $customClaims['date_added'],
-            "last_modified" => $customClaims['last_modified'],
-            "watch_history" => $customClaims['watch_history'],
-            "wishlist" => $customClaims['wishlist'],
-            "title" => $customClaims['title'],
-            "paypal_keys" => $customClaims['paypal_keys'],
-            "stripe_keys" => $customClaims['stripe_keys'],
-            "peach_payment_keys" => $customClaims['peach_payment_keys'],
-            "payment_keys" => $customClaims['payment_keys'],
-            "verification_code" => $customClaims['verification_code'],
-            "status" => $customClaims['status'],
-            "is_instructor" => $customClaims['is_instructor'],
-            "image" => $customClaims['image'],
-        );
+            return array(
+                "id" => $user_id,
+                "first_name" => $customClaims['first_name'],
+                "last_name" => $customClaims['last_name'],
+                "commission" => $customClaims['commission'],
+                "email" => $user->email,
+                "skills" => $customClaims['skills'],
+                "social_links" => $customClaims['social_links'],
+                "biography" => $customClaims['biography'],
+                "role_id" => $customClaims['role_id'],
+                "date_added" => $customClaims['date_added'],
+                "last_modified" => $customClaims['last_modified'],
+                "watch_history" => $customClaims['watch_history'],
+                "wishlist" => $customClaims['wishlist'],
+                "title" => $customClaims['title'],
+                "paypal_keys" => $customClaims['paypal_keys'],
+                "stripe_keys" => $customClaims['stripe_keys'],
+                "peach_payment_keys" => $customClaims['peach_payment_keys'],
+                "payment_keys" => $customClaims['payment_keys'],
+                "verification_code" => $customClaims['verification_code'],
+                "status" => $customClaims['status'],
+                "is_instructor" => $customClaims['is_instructor'],
+                "image" => $customClaims['image'],
+            );
+        } catch (\Throwable$th) {
+            return null;
+        }
     }
 
     public function get_all_user($user_id = 0)
