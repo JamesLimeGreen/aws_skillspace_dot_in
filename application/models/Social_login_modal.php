@@ -46,8 +46,15 @@ class Social_login_modal extends CI_Model
                     $first_name = $user['first_name'];
                     $last_name = $user['last_name'];
 
-                    $firebaseUser = $this->user_model->firebaseAuth->getUserByEmail($email);
-                    $customClaims = $firebaseUser ? $firebaseUser->customClaims : null;
+                    $firebaseUser = null;
+                    $customClaims = null;
+                    try {
+                        //code...
+                        $firebaseUser = $this->user_model->firebaseAuth->getUserByEmail($email);
+                        $customClaims = $firebaseUser ? $firebaseUser->customClaims : null;
+                    } catch (\Throwable$th) {
+                        //throw $th;
+                    }
 
                     if ($firebaseUser && $firebaseUser->uid && $customClaims['status'] === 1) {
                         $this->session->set_userdata('user_id', $firebaseUser->uid);
@@ -114,27 +121,35 @@ class Social_login_modal extends CI_Model
                                 'displayName' => $data['first_name'] . " " . $data['last_name'],
                                 'disabled' => false,
                             ];
-                            $createdUser = $this->user_model->firebaseAuth->createUser($userProperties);
+                            try {
+                                $createdUser = $this->user_model->firebaseAuth->createUser($userProperties);
 
-                            $this->user_model->firebaseAuth->setCustomUserClaims($createdUser->uid, [
-                                'role_id' => $data['role_id'],
-                                'paypal_keys' => $data['paypal_keys'],
-                                'verification_code' => $data['verification_code'],
-                                'wishlist' => $data['wishlist'],
-                                'watch_history' => $data['watch_history'],
-                                'date_added' => $data['date_added'],
-                                'social_links' => $data['social_links'],
-                                'production_client_id' => $data['production_client_id'],
-                                'paypal_keys' => $data['paypal_keys'],
-                                'stripe_keys' => $data['stripe_keys'],
-                                'first_name' => $data['first_name'],
-                                'last_name' => $data['last_name'],
-                                'status' => $data['status'],
-                                'is_instructor' => 0,
-                            ]);
+                                $this->user_model->firebaseAuth->setCustomUserClaims($createdUser->uid, [
+                                    'role_id' => $data['role_id'],
+                                    'paypal_keys' => $data['paypal_keys'],
+                                    'verification_code' => $data['verification_code'],
+                                    'wishlist' => $data['wishlist'],
+                                    'watch_history' => $data['watch_history'],
+                                    'date_added' => $data['date_added'],
+                                    'social_links' => $data['social_links'],
+                                    'production_client_id' => $data['production_client_id'],
+                                    'paypal_keys' => $data['paypal_keys'],
+                                    'stripe_keys' => $data['stripe_keys'],
+                                    'first_name' => $data['first_name'],
+                                    'last_name' => $data['last_name'],
+                                    'status' => $data['status'],
+                                    'is_instructor' => 0,
+                                ]);
+                            } catch (\Throwable$th) {
+
+                            }
                             //login
-                            $firebaseUser = $this->user_model->firebaseAuth->getUserByEmail($email);
-                            $customClaims = $firebaseUser ? $firebaseUser->customClaims : null;
+                            try {
+                                $firebaseUser = $this->user_model->firebaseAuth->getUserByEmail($email);
+                                $customClaims = $firebaseUser ? $firebaseUser->customClaims : null;
+                            } catch (\Throwable$th) {
+                                //throw $th;
+                            }
 
                             if ($customClaims) {
                                 $this->session->set_userdata('user_id', $firebaseUser->uid);
