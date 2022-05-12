@@ -11,6 +11,7 @@ class Home extends CI_Controller
 
         //$this->output->cache(1);
 
+        die("Home Login test");
         /*
         try {
         $factory = (new Factory)
@@ -1432,7 +1433,7 @@ class Home extends CI_Controller
                 $html .= '<div class="col-sm-3 course-box-wrap">';
 
                 $html .= '<span class="courses_badge_wishlist text-primary" onclick="handleWishList(this)" id="' . $latest_course['id'] . '"><i class="fa fa-heart"></i></span>
-								                            <span class="courses_badge_cart text-primary"  id="' . $latest_course['id'] . '" onclick="handleCartItems(this)"><i class="fa fa-cart-plus"></i></span>';
+									                            <span class="courses_badge_cart text-primary"  id="' . $latest_course['id'] . '" onclick="handleCartItems(this)"><i class="fa fa-cart-plus"></i></span>';
 
                 $html .= '<a onclick="return check_action(this);" href="' . site_url('home/course/' . rawurlencode(slugify($latest_course['title'])) . '/' . $latest_course['id']) . '" class="has-popover">';
 
