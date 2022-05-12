@@ -67,6 +67,7 @@ class Login extends CI_Controller
             }
 
         } catch (\Throwable$th) {
+            die("Login Error" . $th->getMessage());
             $this->session->set_flashdata('error_message', get_phrase('invalid_login_credentials'));
             redirect(site_url('home/login'), 'refresh');
         }

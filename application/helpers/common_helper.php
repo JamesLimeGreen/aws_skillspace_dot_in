@@ -1,20 +1,31 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
 /**
  * CodeIgniter
  *
  * An open source application development framework for PHP 5.1.6 or newer
  *
- * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
- * @license		http://codeigniter.com/user_guide/license.html
- * @link		http://codeigniter.com
- * @since		Version 1.0
+ * @package        CodeIgniter
+ * @author        ExpressionEngine Dev Team
+ * @copyright    Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @license        http://codeigniter.com/user_guide/license.html
+ * @link        http://codeigniter.com
+ * @since        Version 1.0
  * @filesource
  */
 
-if (! function_exists('remove_js')) {
-    function remove_js($description = '') {
+if (!function_exists('isLocalhost')) {
+    function isLocalhost($whitelist = ['127.0.0.1', '::1'])
+    {
+        return in_array($_SERVER['REMOTE_ADDR'], $whitelist);
+    }
+}
+
+if (!function_exists('remove_js')) {
+    function remove_js($description = '')
+    {
         return preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', "", $description);
     }
 }
@@ -22,7 +33,7 @@ if (! function_exists('remove_js')) {
 if (!function_exists('has_permission')) {
     function has_permission($permission_for = '', $admin_id = '')
     {
-        $CI    = &get_instance();
+        $CI = &get_instance();
         $CI->load->database();
 
         // GET THE LOGGEDIN IN ADMIN ID
@@ -32,12 +43,12 @@ if (!function_exists('has_permission')) {
 
         $CI->db->where('admin_id', $admin_id);
         $get_admin_permissions = $CI->db->get('permissions');
-        if ($get_admin_permissions->num_rows() == 0){
+        if ($get_admin_permissions->num_rows() == 0) {
             return true;
         } else {
             $get_admin_permissions = $get_admin_permissions->row_array();
             $permissions = json_decode($get_admin_permissions['permissions']);
-            if (in_array($permission_for, $permissions)){
+            if (in_array($permission_for, $permissions)) {
                 return true;
             } else {
                 return false;
@@ -49,7 +60,7 @@ if (!function_exists('has_permission')) {
 if (!function_exists('check_permission')) {
     function check_permission($permission_for)
     {
-        $CI    = &get_instance();
+        $CI = &get_instance();
         $CI->load->database();
 
         if (!has_permission($permission_for)) {
@@ -62,7 +73,7 @@ if (!function_exists('check_permission')) {
 if (!function_exists('is_root_admin')) {
     function is_root_admin($admin_id = '')
     {
-        $CI    = &get_instance();
+        $CI = &get_instance();
         $CI->load->database();
 
         // GET THE LOGGEDIN IN ADMIN ID
@@ -80,49 +91,49 @@ if (!function_exists('is_root_admin')) {
     }
 }
 
-if (! function_exists('get_past_time')) {
-    function get_past_time( $time = "" ) {
+if (!function_exists('get_past_time')) {
+    function get_past_time($time = "")
+    {
         $time_difference = time() - $time;
 
-        if( $time_difference < 1 ) { return 'less than 1 second ago'; }
+        if ($time_difference < 1) {return 'less than 1 second ago';}
 
         //864000 = 10 days
-        if($time_difference > 864000){ return custom_date($time, 1); }
+        if ($time_difference > 864000) {return custom_date($time, 1);}
 
-        $condition = array( 12 * 30 * 24 * 60 * 60 =>  site_phrase('year'),
-                    30 * 24 * 60 * 60       =>  site_phrase('month'),
-                    24 * 60 * 60            =>  site_phrase('day'),
-                    60 * 60                 =>  site_phrase('hour'),
-                    60                      =>  site_phrase('minute'),
-                    1                       =>  site_phrase('second')
+        $condition = array(12 * 30 * 24 * 60 * 60 => site_phrase('year'),
+            30 * 24 * 60 * 60 => site_phrase('month'),
+            24 * 60 * 60 => site_phrase('day'),
+            60 * 60 => site_phrase('hour'),
+            60 => site_phrase('minute'),
+            1 => site_phrase('second'),
         );
 
-        foreach( $condition as $secs => $str )
-        {
+        foreach ($condition as $secs => $str) {
             $d = $time_difference / $secs;
 
-            if( $d >= 1 )
-            {
-                $t = round( $d );
-                return $t . ' ' . $str . ( $t > 1 ? 's' : '' ) .' '. site_phrase('ago');
+            if ($d >= 1) {
+                $t = round($d);
+                return $t . ' ' . $str . ($t > 1 ? 's' : '') . ' ' . site_phrase('ago');
             }
         }
     }
 }
 
-if (! function_exists('resizeImage')) {
-    function resizeImage($filelocation = "", $target_path = "", $width = "", $height = "") {
-        $CI =&  get_instance();
+if (!function_exists('resizeImage')) {
+    function resizeImage($filelocation = "", $target_path = "", $width = "", $height = "")
+    {
+        $CI = &get_instance();
         $CI->load->database();
-        
-        if($width == ""){
+
+        if ($width == "") {
             $width = 200;
         }
 
-        if($height == ""){
-            $maintain_ratio = TRUE;
-        }else{
-            $maintain_ratio = FALSE;
+        if ($height == "") {
+            $maintain_ratio = true;
+        } else {
+            $maintain_ratio = false;
         }
 
         $config_manip = array(
@@ -130,27 +141,27 @@ if (! function_exists('resizeImage')) {
             'source_image' => $filelocation,
             'new_image' => $target_path,
             'maintain_ratio' => $maintain_ratio,
-            'create_thumb' => TRUE,
+            'create_thumb' => true,
             'thumb_marker' => '',
             'width' => $width,
-            'height' => $height
+            'height' => $height,
         );
         $CI->load->library('image_lib', $config_manip);
 
         if ($CI->image_lib->resize()) {
             return true;
-        }else{
+        } else {
             $CI->image_lib->display_errors();
             return false;
         }
         $CI->image_lib->clear();
-   }
+    }
 }
 
 if (!function_exists('get_settings')) {
     function get_settings($key = '')
     {
-        $CI    = &get_instance();
+        $CI = &get_instance();
         $CI->load->database();
 
         $CI->db->where('key', $key);
@@ -162,7 +173,7 @@ if (!function_exists('get_settings')) {
 if (!function_exists('currency')) {
     function currency($price = "")
     {
-        $CI    = &get_instance();
+        $CI = &get_instance();
         $CI->load->database();
         if ($price != "") {
             $CI->db->where('key', 'system_currency');
@@ -201,7 +212,7 @@ if (!function_exists('custom_date')) {
 if (!function_exists('currency_code_and_symbol')) {
     function currency_code_and_symbol($type = "")
     {
-        $CI    = &get_instance();
+        $CI = &get_instance();
         $CI->load->database();
         $CI->db->where('key', 'system_currency');
         $currency_code = $CI->db->get('settings')->row()->value;
@@ -219,7 +230,7 @@ if (!function_exists('currency_code_and_symbol')) {
 if (!function_exists('get_frontend_settings')) {
     function get_frontend_settings($key = '')
     {
-        $CI    = &get_instance();
+        $CI = &get_instance();
         $CI->load->database();
 
         $CI->db->where('key', $key);
@@ -235,8 +246,10 @@ if (!function_exists('slugify')) {
         $text = trim($text, '-');
         $text = strtolower($text);
         //$text = preg_replace('~[^-\w]+~', '', $text);
-        if (empty($text))
+        if (empty($text)) {
             return 'n-a';
+        }
+
         return $text;
     }
 }
@@ -293,7 +306,7 @@ if (!function_exists('readable_time_for_humans')) {
     {
         if ($duration) {
             $duration_array = explode(':', $duration);
-            $hour   = $duration_array[0];
+            $hour = $duration_array[0];
             $minute = $duration_array[1];
             $second = $duration_array[2];
             if ($hour > 0) {
@@ -323,8 +336,10 @@ if (!function_exists('trimmer')) {
         $text = trim($text, '-');
         $text = strtolower($text);
         $text = preg_replace('~[^-\w]+~', '', $text);
-        if (empty($text))
+        if (empty($text)) {
             return 'n-a';
+        }
+
         return $text;
     }
 }
@@ -332,15 +347,17 @@ if (!function_exists('trimmer')) {
 if (!function_exists('lesson_progress')) {
     function lesson_progress($lesson_id = "", $user_id = "")
     {
-        $CI    = &get_instance();
+        $CI = &get_instance();
         $CI->load->database();
         if ($user_id == "") {
             $user_id = $CI->session->userdata('user_id');
         }
         $user_details = $CI->user_model->get_all_user($user_id)->row_array();
         $watch_history_array = json_decode($user_details['watch_history'], true);
-        
-        if(!is_array($watch_history_array)) $watch_history_array = array();
+
+        if (!is_array($watch_history_array)) {
+            $watch_history_array = array();
+        }
 
         for ($i = 0; $i < count($watch_history_array); $i++) {
             $watch_history_for_each_lesson = $watch_history_array[$i];
@@ -354,7 +371,7 @@ if (!function_exists('lesson_progress')) {
 if (!function_exists('course_progress')) {
     function course_progress($course_id = "", $user_id = "", $return_type = "")
     {
-        $CI    = &get_instance();
+        $CI = &get_instance();
         $CI->load->database();
         if ($user_id == "") {
             $user_id = $CI->session->userdata('user_id');
@@ -382,7 +399,6 @@ if (!function_exists('course_progress')) {
                 array_push($completed_lessons_ids, $watch_history_for_each_lesson['lesson_id']);
             }
         }
-
 
         if ($return_type == "completed_lesson_ids") {
             foreach ($lessons_for_that_course->result_array() as $row) {
@@ -440,7 +456,6 @@ if (!function_exists('phpFileUploadErrors')) {
     }
 }
 
-
 // course bundle subscription data
 if (!function_exists('get_bundle_validity')) {
     function get_bundle_validity($bundle_id = "", $user_id = "")
@@ -476,16 +491,15 @@ if (!function_exists('get_bundle_validity')) {
     }
 }
 
-if(!function_exists('prx')){
-    function prx($data){
+if (!function_exists('prx')) {
+    function prx($data)
+    {
         echo "<pre>";
         print_r($data);
 
         die();
     }
 }
-
-
 
 // ------------------------------------------------------------------------
 /* End of file common_helper.php */
