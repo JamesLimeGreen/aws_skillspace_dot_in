@@ -199,7 +199,7 @@ class Login extends CI_Controller
                     $createdUser = $this->user_model->firebaseAuth->createUser($userProperties);
 
                     $this->user_model->firebaseAuth->setCustomUserClaims($createdUser->uid, [
-                        'role_id' => 2,
+                        'role_id' => $data['role_id'],
                         'paypal_keys' => $data['paypal_keys'],
                         'verification_code' => $data['verification_code'],
                         'wishlist' => $data['wishlist'],
@@ -211,6 +211,7 @@ class Login extends CI_Controller
                         'stripe_keys' => $data['stripe_keys'],
                         'first_name' => $data['first_name'],
                         'last_name' => $data['last_name'],
+                        'status' => $data['status'],
                         'is_instructor' => 0,
                     ]);
 
