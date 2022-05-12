@@ -11,7 +11,6 @@ class Home extends CI_Controller
 
         //$this->output->cache(1);
 
-        die("Home Login test");
         /*
         try {
         $factory = (new Factory)
