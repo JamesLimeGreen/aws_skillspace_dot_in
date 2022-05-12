@@ -123,6 +123,7 @@ class Login extends CI_Controller
 
         $data['first_name'] = html_escape($this->input->post('first_name'));
         $data['last_name'] = html_escape($this->input->post('last_name'));
+        $data['mobile'] = html_escape($this->input->post('mobile'));
         $data['email'] = html_escape($this->input->post('email'));
         // $data['password'] = sha1($this->input->post('password'));
         $data['password'] = $this->input->post('password');
@@ -189,6 +190,7 @@ class Login extends CI_Controller
                 if ($validity === true) {
                     $userProperties = [
                         'email' => $data['email'],
+                        'phoneNumber' => $data['mobile'],
                         'emailVerified' => false,
                         'password' => $data['password'],
                         'displayName' => $data['first_name'] . " " . $data['last_name'],

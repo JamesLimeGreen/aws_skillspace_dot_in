@@ -1,6 +1,6 @@
-<?php if(get_frontend_settings('recaptcha_status')): ?>
+<?php if (get_frontend_settings('recaptcha_status')): ?>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-<?php endif; ?>
+<?php endif;?>
 
 
 
@@ -18,7 +18,10 @@
           </div>
           <div class="col-lg-6">
             <div class="sign-up-form">
-              <?php if(get_settings('fb_social_login')) include "facebook_login.php"; ?>
+              <?php if (get_settings('fb_social_login')) {
+    include "facebook_login.php";
+}
+?>
               <form action="<?php echo site_url('login/register'); ?>" method="post" id="sign_up">
                 <div class="form-group">
                   <label for="first_name"><?php echo site_phrase('first_name'); ?></label>
@@ -37,6 +40,15 @@
                 </div>
 
                 <div class="form-group">
+                  <label for="registration-email"><?php echo site_phrase('mobile'); ?></label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white" for="email"><i class="fas fa-user"></i></span>
+                    <input type="tel" name="mobile" class="form-control" placeholder="<?php echo site_phrase('mobile'); ?>" aria-label="<?php echo site_phrase('mobile'); ?>" aria-describedby="<?php echo site_phrase('mobile'); ?>" id="registration-email" required>
+                  </div>
+                </div>
+
+
+                <div class="form-group">
                   <label for="registration-email"><?php echo site_phrase('email'); ?></label>
                   <div class="input-group">
                     <span class="input-group-text bg-white" for="email"><i class="fas fa-user"></i></span>
@@ -52,11 +64,11 @@
                   </div>
                 </div>
 
-                <?php if(get_frontend_settings('recaptcha_status')): ?>
+                <?php if (get_frontend_settings('recaptcha_status')): ?>
                   <div class="form-group mt-4 mb-0">
                     <div class="g-recaptcha" data-sitekey="<?php echo get_frontend_settings('recaptcha_sitekey'); ?>"></div>
                   </div>
-                <?php endif; ?>
+                <?php endif;?>
 
                 <div class="form-group">
                   <button type="submit" class="btn red radius-10 mt-4 w-100"><?php echo site_phrase('sign_up'); ?></button>

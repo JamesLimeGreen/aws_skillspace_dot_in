@@ -49,6 +49,7 @@ class User_model extends CI_Model
                 "last_name" => $customClaims['last_name'],
                 "commission" => $customClaims['commission'],
                 "email" => $user->email,
+                "mobile" => $user->phoneNumber,
                 "skills" => $customClaims['skills'],
                 "social_links" => $customClaims['social_links'],
                 "biography" => $customClaims['biography'],
