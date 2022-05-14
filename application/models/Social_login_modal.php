@@ -191,7 +191,6 @@ class Social_login_modal extends CI_Model
                 redirect(site_url('home/login'), 'refresh');
             }
         } catch (\Throwable$th) {
-            die("Facebook Error " . $th->getMessage());
         }
 
     }

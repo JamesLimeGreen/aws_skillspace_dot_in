@@ -1,5 +1,5 @@
-<?php $social_links = json_decode($user_details['social_links'], true); ?>
-<?php include "profile_menus.php"; ?>
+<?php $social_links = json_decode($user_details['social_links'], true);?>
+<?php include "profile_menus.php";?>
 
 <section class="user-dashboard-area">
     <div class="container">
@@ -10,7 +10,7 @@
                     <div class="user-box">
                         <img src="<?php echo $this->user_model->get_user_image_url($this->session->userdata('user_id')); ?>" alt="" class="img-fluid">
                         <div class="name">
-                            <div class="name"><?php echo $user_details['first_name'].' '.$user_details['last_name']; ?></div>
+                            <div class="name"><?php echo $user_details['first_name'] . ' ' . $user_details['last_name']; ?></div>
                         </div>
                     </div>
                     <div class="user-dashboard-menu">
@@ -21,7 +21,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
             </div>
             <div class="col-md-8 col-lg-9 mt-4 mt-md-0">
                 <form class="w-100 bg-white radius-10 p-4" action="<?php echo site_url('home/update_profile/update_basics'); ?>" method="post">
@@ -47,7 +47,7 @@
                         </div>
 
                         <div class="col-12 mt-3">
-                            <?php if($user_details['is_instructor'] > 0): ?>
+                            <?php if ($user_details['is_instructor'] > 0): ?>
                                 <div class="form-group mb-3">
                                     <label class="text-dark fw-600" for="Biography"><?php echo site_phrase('title'); ?></label>
                                     <textarea class="form-control" name = "title" placeholder="<?php echo site_phrase('short_title_about_yourself'); ?>"><?php echo $user_details['title']; ?></textarea>
@@ -55,16 +55,24 @@
 
                                 <div class="form-group mb-3">
                                     <label class="text-dark fw-600"  for="skills"><?php echo get_phrase('your_skills'); ?></label>
-                                    <input type="text" class=" tagify" id = "skills" name="skills" data-role="tagsinput" style="width: 100%;" value="<?php echo $user_details['skills'];  ?>"/>
+                                    <input type="text" class=" tagify" id = "skills" name="skills" data-role="tagsinput" style="width: 100%;" value="<?php echo $user_details['skills']; ?>"/>
                                     <small class="text-muted"><?php echo get_phrase('write_your_skill_and_click_the_enter_button'); ?></small>
                                 </div>
-                                
-                            <?php endif; ?>
+
+                            <?php endif;?>
+
+
 
                             <div class="form-group">
                                 <label class="text-dark fw-600" for="Biography"><?php echo site_phrase('biography'); ?></label>
                                 <textarea class="form-control author-biography-editor" name = "biography" id="Biography"><?php echo $user_details['biography']; ?></textarea>
                             </div>
+
+                            <div class="form-group mt-3">
+                                <label class="text-dark fw-600" for="Address"><?php echo site_phrase('address'); ?></label>
+                                <textarea class="form-control" name = "address" id="Address"><?php echo $user_details['address']; ?></textarea>
+                            </div>
+
 
                             <hr class="my-5 bg-secondary">
 

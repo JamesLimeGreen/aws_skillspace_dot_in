@@ -42,21 +42,20 @@ class Login extends CI_Controller
 
             if ($signInResult && $signInResult->data()) {
                 $userData = $signInResult->data();
-                $user = $this->user_model->firebaseAuth->getUserByEmail($email);
 
-                $customClaims = $user->customClaims;
+                $user = $this->user_model->get_user($userData['localId']);
 
-                $this->session->set_userdata('user_id', $user->uid);
-                $this->session->set_userdata('role_id', $customClaims['role_id']);
-                $this->session->set_userdata('role', get_user_role_by_role_id($customClaims['role_id']));
-                $this->session->set_userdata('name', $customClaims['first_name'] . ' ' . $customClaims['last_name']);
-                $this->session->set_userdata('is_instructor', $customClaims['is_instructor']);
-                $this->session->set_flashdata('flash_message', get_phrase('welcome') . ' ' . $customClaims['first_name'] . ' ' . $customClaims['last_name']);
+                $this->session->set_userdata('user_id', $user['id']);
+                $this->session->set_userdata('role_id', $user['role_id']);
+                $this->session->set_userdata('role', get_user_role_by_role_id($user['role_id']));
+                $this->session->set_userdata('name', $user['first_name'] . ' ' . $user['last_name']);
+                $this->session->set_userdata('is_instructor', $user['is_instructor']);
+                $this->session->set_flashdata('flash_message', get_phrase('welcome') . ' ' . $user['first_name'] . ' ' . $user['last_name']);
 
-                if ($customClaims['role_id'] == 1) {
+                if ($user['role_id'] == 1) {
                     $this->session->set_userdata('admin_login', '1');
                     redirect(site_url('admin/dashboard'), 'refresh');
-                } else if ($customClaims['role_id'] == 2) {
+                } else if ($user['role_id'] == 2) {
                     $this->session->set_userdata('user_login', '1');
 
                     if ($this->session->userdata('url_history')) {
@@ -67,41 +66,10 @@ class Login extends CI_Controller
             }
 
         } catch (\Throwable$th) {
-            die("Login Error" . $th->getMessage());
             $this->session->set_flashdata('error_message', get_phrase('invalid_login_credentials'));
             redirect(site_url('home/login'), 'refresh');
         }
 
-        /*
-    $credential = array('email' => $email, 'password' => sha1($password), 'status' => 1);
-
-    // Checking login credential for admin
-    $query = $this->db->get_where('users', $credential);
-
-    if ($query->num_rows() > 0) {
-    $row = $query->row();
-    $this->session->set_userdata('user_id', $row->id);
-    $this->session->set_userdata('role_id', $row->role_id);
-    $this->session->set_userdata('role', get_user_role('user_role', $row->id));
-    $this->session->set_userdata('name', $row->first_name . ' ' . $row->last_name);
-    $this->session->set_userdata('is_instructor', $row->is_instructor);
-    $this->session->set_flashdata('flash_message', get_phrase('welcome') . ' ' . $row->first_name . ' ' . $row->last_name);
-    if ($row->role_id == 1) {
-    $this->session->set_userdata('admin_login', '1');
-    redirect(site_url('admin/dashboard'), 'refresh');
-    } else if ($row->role_id == 2) {
-    $this->session->set_userdata('user_login', '1');
-
-    if ($this->session->userdata('url_history')) {
-    redirect($this->session->userdata('url_history'), 'refresh');
-    }
-    redirect(site_url('home'), 'refresh');
-    }
-    } else {
-    $this->session->set_flashdata('error_message', get_phrase('invalid_login_credentials'));
-    redirect(site_url('home/login'), 'refresh');
-    }
-     */
     }
 
     public function fb_validate_login($access_token = "", $fb_user_id = "")
@@ -121,14 +89,15 @@ class Login extends CI_Controller
             redirect(site_url('home/login'), 'refresh');
         }
 
+        $mobile = html_escape($this->input->post('mobile'));
+        $email = html_escape($this->input->post('email'));
+        $password = html_escape($this->input->post('password'));
+        // $data['password'] = sha1($this->input->post('password'));
+
         $data['first_name'] = html_escape($this->input->post('first_name'));
         $data['last_name'] = html_escape($this->input->post('last_name'));
-        $data['mobile'] = html_escape($this->input->post('mobile'));
-        $data['email'] = html_escape($this->input->post('email'));
-        // $data['password'] = sha1($this->input->post('password'));
-        $data['password'] = $this->input->post('password');
 
-        if (empty($data['first_name']) || empty($data['last_name']) || empty($data['email']) || empty($data['password'])) {
+        if (empty($data['first_name']) || empty($data['last_name']) || empty($email) || empty($password)) {
             $this->session->set_flashdata('error_message', site_phrase('your_sign_up_form_is_empty') . '. ' . site_phrase('fill_out_the_form with_your_valid_data'));
             redirect(site_url('home/sign_up'), 'refresh');
         }
@@ -167,68 +136,41 @@ class Login extends CI_Controller
         array_push($stripe_info, $stripe_keys);
         $data['stripe_keys'] = json_encode($stripe_info);
 
-        // $validity = $this->user_model->check_duplication('on_create', $data['email']);
-        $validity = true;
+        // For super admin
+        // $data['role_id'] = 1;
 
         try {
-            // Firebase auth
+            $validity = $this->user_model->check_duplication('on_create', $email);
 
-            try {
-                $firebaseUser = $this->user_model->firebaseAuth->getUserByEmail($data['email']);
-                if ($firebaseUser && $firebaseUser->uid) {
-                    if ($firebaseUser->emailVerified === false) {
-                        $validity == 'unverified_user';
-                    } else {
-                        $validity = false;
-                    }
-                }
-            } catch (\Throwable$th) {
-            }
-
-            // if ($validity === 'unverified_user' || $validity == true) {
-            if ($validity == true) {
+            if ($validity === 'unverified_user' || $validity == true) {
                 if ($validity === true) {
                     $userProperties = [
-                        'email' => $data['email'],
-                        'phoneNumber' => $data['mobile'],
+                        'email' => $email,
                         'emailVerified' => false,
-                        'password' => $data['password'],
+                        'password' => $password,
                         'displayName' => $data['first_name'] . " " . $data['last_name'],
                         'disabled' => false,
                     ];
+                    if ($mobile) {
+                        $userProperties['phoneNumber'] = $mobile;
+                    }
                     $createdUser = $this->user_model->firebaseAuth->createUser($userProperties);
 
-                    $this->user_model->firebaseAuth->setCustomUserClaims($createdUser->uid, [
-                        'role_id' => $data['role_id'],
-                        'paypal_keys' => $data['paypal_keys'],
-                        'verification_code' => $data['verification_code'],
-                        'wishlist' => $data['wishlist'],
-                        'watch_history' => $data['watch_history'],
-                        'date_added' => $data['date_added'],
-                        'social_links' => $data['social_links'],
-                        'production_client_id' => $data['production_client_id'],
-                        'paypal_keys' => $data['paypal_keys'],
-                        'stripe_keys' => $data['stripe_keys'],
-                        'first_name' => $data['first_name'],
-                        'last_name' => $data['last_name'],
-                        'status' => $data['status'],
-                        'is_instructor' => 0,
-                    ]);
-
-                    // $this->user_model->register_user($data);
+                    $data['firebase_uid'] = $createdUser->uid;
+                    $this->user_model->register_user($data);
                 } else {
                     // $this->user_model->register_user_update_code($data);
                 }
 
                 if (get_settings('student_email_verification') == 'enable') {
-                    $this->email_model->send_email_verification_mail($data['email'], $verification_code);
+                    $this->email_model->send_email_verification_mail($email, $verification_code);
 
                     if ($validity === 'unverified_user') {
                         $this->session->set_flashdata('info_message', get_phrase('you_have_already_registered') . '. ' . get_phrase('please_verify_your_email_address'));
                     } else {
                         $this->session->set_flashdata('flash_message', get_phrase('your_registration_has_been_successfully_done') . '. ' . get_phrase('please_check_your_mail_inbox_to_verify_your_email_address') . '.');
                     }
-                    $this->session->set_userdata('register_email', $this->input->post('email'));
+                    $this->session->set_userdata('register_email', $email);
                     redirect(site_url('home/verification_code'), 'refresh');
                 } else {
                     $this->session->set_flashdata('flash_message', get_phrase('your_registration_has_been_successfully_done'));

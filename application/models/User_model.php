@@ -33,41 +33,21 @@ class User_model extends CI_Model
 
     public function get_user($user_id = 0)
     {
-        // if ($user_id > 0) {
-        //     $this->db->where('id', $user_id);
-        // }
-        // $this->db->where('role_id', 2);
+
         // return $this->db->get('users');
 
         try {
             $user = $this->firebaseAuth->getUser($user_id);
-            $customClaims = $user->customClaims;
 
-            return array(
-                "id" => $user_id,
-                "first_name" => $customClaims['first_name'],
-                "last_name" => $customClaims['last_name'],
-                "commission" => $customClaims['commission'],
-                "email" => $user->email,
-                "mobile" => $user->phoneNumber,
-                "skills" => $customClaims['skills'],
-                "social_links" => $customClaims['social_links'],
-                "biography" => $customClaims['biography'],
-                "role_id" => $customClaims['role_id'],
-                "date_added" => $customClaims['date_added'],
-                "last_modified" => $customClaims['last_modified'],
-                "watch_history" => $customClaims['watch_history'],
-                "wishlist" => $customClaims['wishlist'],
-                "title" => $customClaims['title'],
-                "paypal_keys" => $customClaims['paypal_keys'],
-                "stripe_keys" => $customClaims['stripe_keys'],
-                "peach_payment_keys" => $customClaims['peach_payment_keys'],
-                "payment_keys" => $customClaims['payment_keys'],
-                "verification_code" => $customClaims['verification_code'],
-                "status" => $customClaims['status'],
-                "is_instructor" => $customClaims['is_instructor'],
-                "image" => $customClaims['image'],
-            );
+            if ($user_id) {
+                $this->db->where('firebase_uid', $user_id);
+            }
+            $userData = $this->db->get('users')->row_array();
+            $userData['email'] = $user->email;
+            $userData['id'] = $user_id;
+            $userData['mobile'] = $user->phoneNumber;
+
+            return $userData;
         } catch (\Throwable$th) {
             return null;
         }
@@ -197,11 +177,19 @@ class User_model extends CI_Model
 
     public function check_duplication($action = "", $email = "", $user_id = "")
     {
-        $duplicate_email_check = $this->db->get_where('users', array('email' => $email));
+        $firebaseUser = null;
+        try {
+            $firebaseUser = $email ? $this->firebaseAuth->getUserByEmail($email) : null;
+        } catch (\Throwable$th) {
+            //throw $th;
+        }
 
         if ($action == 'on_create') {
-            if ($duplicate_email_check->num_rows() > 0) {
-                if ($duplicate_email_check->row()->status == 1) {
+            if ($firebaseUser && $firebaseUser->uid) {
+                $this->db->where('firebase_uid', $firebaseUser->uid);
+                $userData = $this->db->get('users')->row_array();
+
+                if ($userData->status == 1) {
                     return false;
                 } else {
                     return 'unverified_user';
@@ -210,8 +198,8 @@ class User_model extends CI_Model
                 return true;
             }
         } elseif ($action == 'on_update') {
-            if ($duplicate_email_check->num_rows() > 0) {
-                if ($duplicate_email_check->row()->id == $user_id) {
+            if ($firebaseUser && $firebaseUser->uid) {
+                if ($firebaseUser->uid == $user_id) {
                     return true;
                 } else {
                     return false;
@@ -224,49 +212,59 @@ class User_model extends CI_Model
 
     public function edit_user($user_id = "")
     { // Admin does this editing
-        $validity = $this->check_duplication('on_update', $this->input->post('email'), $user_id);
-        if ($validity) {
-            $data['first_name'] = html_escape($this->input->post('first_name'));
-            $data['last_name'] = html_escape($this->input->post('last_name'));
+        try {
+            $validity = $this->check_duplication('on_update', $this->input->post('email'), $user_id);
+            if ($validity) {
+                $data['first_name'] = html_escape($this->input->post('first_name'));
+                $data['last_name'] = html_escape($this->input->post('last_name'));
 
-            if (isset($_POST['email'])) {
-                $data['email'] = html_escape($this->input->post('email'));
+                $social_link['facebook'] = html_escape($this->input->post('facebook_link'));
+                $social_link['twitter'] = html_escape($this->input->post('twitter_link'));
+                $social_link['linkedin'] = html_escape($this->input->post('linkedin_link'));
+                $data['social_links'] = json_encode($social_link);
+                $data['biography'] = $this->input->post('biography');
+                $data['address'] = $this->input->post('address');
+                $data['title'] = html_escape($this->input->post('title'));
+                $data['skills'] = html_escape($this->input->post('skills'));
+                $data['last_modified'] = strtotime(date("Y-m-d H:i:s"));
+
+                if (isset($_FILES['user_image']) && $_FILES['user_image']['name'] != "") {
+                    unlink('uploads/user_image/' . $this->db->get_where('users', array('id' => $user_id))->row('image') . '.jpg');
+                    $data['image'] = md5(rand(10000, 10000000));
+                    $this->upload_user_image($data['image']);
+                }
+
+                // Update paypal keys
+                $paypal_info = array();
+                $paypal['production_client_id'] = html_escape($this->input->post('paypal_client_id'));
+                $paypal['production_secret_key'] = html_escape($this->input->post('paypal_secret_key'));
+                array_push($paypal_info, $paypal);
+                $data['paypal_keys'] = json_encode($paypal_info);
+                // Update Stripe keys
+                $stripe_info = array();
+                $stripe_keys = array(
+                    'public_live_key' => html_escape($this->input->post('stripe_public_key')),
+                    'secret_live_key' => html_escape($this->input->post('stripe_secret_key')),
+                );
+                array_push($stripe_info, $stripe_keys);
+                $data['stripe_keys'] = json_encode($stripe_info);
+
+                if (isset($_POST['email'])) {
+                    $email = html_escape($this->input->post('email'));
+                    $this->firebaseAuth->changeUserEmail($user_id, $email);
+                }
+                // if (isset($_POST['mobile'])) {
+                //     $mobile = html_escape($this->input->post('mobile'));
+                // }
+
+                $this->db->where('firebase_uid', $user_id);
+                $this->db->update('users', $data);
+
+                $this->session->set_flashdata('flash_message', get_phrase('user_update_successfully'));
+            } else {
+                $this->session->set_flashdata('error_message', get_phrase('email_duplication'));
             }
-            $social_link['facebook'] = html_escape($this->input->post('facebook_link'));
-            $social_link['twitter'] = html_escape($this->input->post('twitter_link'));
-            $social_link['linkedin'] = html_escape($this->input->post('linkedin_link'));
-            $data['social_links'] = json_encode($social_link);
-            $data['biography'] = $this->input->post('biography');
-            $data['title'] = html_escape($this->input->post('title'));
-            $data['skills'] = html_escape($this->input->post('skills'));
-            $data['last_modified'] = strtotime(date("Y-m-d H:i:s"));
-
-            if (isset($_FILES['user_image']) && $_FILES['user_image']['name'] != "") {
-                unlink('uploads/user_image/' . $this->db->get_where('users', array('id' => $user_id))->row('image') . '.jpg');
-                $data['image'] = md5(rand(10000, 10000000));
-                $this->upload_user_image($data['image']);
-            }
-
-            // Update paypal keys
-            $paypal_info = array();
-            $paypal['production_client_id'] = html_escape($this->input->post('paypal_client_id'));
-            $paypal['production_secret_key'] = html_escape($this->input->post('paypal_secret_key'));
-            array_push($paypal_info, $paypal);
-            $data['paypal_keys'] = json_encode($paypal_info);
-            // Update Stripe keys
-            $stripe_info = array();
-            $stripe_keys = array(
-                'public_live_key' => html_escape($this->input->post('stripe_public_key')),
-                'secret_live_key' => html_escape($this->input->post('stripe_secret_key')),
-            );
-            array_push($stripe_info, $stripe_keys);
-            $data['stripe_keys'] = json_encode($stripe_info);
-
-            $this->db->where('id', $user_id);
-            $this->db->update('users', $data);
-            $this->session->set_flashdata('flash_message', get_phrase('user_update_successfully'));
-        } else {
-            $this->session->set_flashdata('error_message', get_phrase('email_duplication'));
+        } catch (\Throwable$th) {
         }
     }
     public function delete_user($user_id = "")

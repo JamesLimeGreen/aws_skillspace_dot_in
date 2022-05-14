@@ -43,7 +43,7 @@
                   <label for="registration-email"><?php echo site_phrase('mobile'); ?></label>
                   <div class="input-group">
                     <span class="input-group-text bg-white" for="email"><i class="fas fa-user"></i></span>
-                    <input type="tel" name="mobile" class="form-control" placeholder="<?php echo site_phrase('mobile'); ?>" aria-label="<?php echo site_phrase('mobile'); ?>" aria-describedby="<?php echo site_phrase('mobile'); ?>" id="registration-email" required>
+                    <input type="tel" name="mobile" class="form-control" placeholder="<?php echo site_phrase('mobile'); ?>" aria-label="<?php echo site_phrase('mobile'); ?>" aria-describedby="<?php echo site_phrase('mobile'); ?>" id="registration-email" >
                   </div>
                 </div>
 
@@ -69,6 +69,7 @@
                     <div class="g-recaptcha" data-sitekey="<?php echo get_frontend_settings('recaptcha_sitekey'); ?>"></div>
                   </div>
                 <?php endif;?>
+
 
                 <div class="form-group">
                   <button type="submit" class="btn red radius-10 mt-4 w-100"><?php echo site_phrase('sign_up'); ?></button>
