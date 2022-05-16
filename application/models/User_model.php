@@ -33,7 +33,6 @@ class User_model extends CI_Model
 
     public function get_user($user_id = 0)
     {
-
         // return $this->db->get('users');
 
         try {
@@ -315,21 +314,32 @@ class User_model extends CI_Model
         $validity = $this->check_duplication('on_update', $this->input->post('email'), $user_id);
         if ($validity) {
             if (!empty($_POST['current_password']) && !empty($_POST['new_password']) && !empty($_POST['confirm_password'])) {
-                $user_details = $this->get_user($user_id)->row_array();
+                $user_details = $this->get_user($user_id);
                 $current_password = $this->input->post('current_password');
                 $new_password = $this->input->post('new_password');
                 $confirm_password = $this->input->post('confirm_password');
-                if ($user_details['password'] == sha1($current_password) && $new_password == $confirm_password) {
-                    $data['password'] = sha1($new_password);
+
+                $userEmail = $user_details['email'];
+                $signInResult = null;
+                try {
+                    $signInResult = $this->firebaseAuth->signInWithEmailAndPassword($userEmail, $current_password);
+                } catch (\Throwable$th) {
+                }
+
+                if ($signInResult && $signInResult->data() && $new_password == $confirm_password) {
+                    try {
+                        $updatedUser = $this->firebaseAuth->changeUserPassword($user_id, $new_password);
+                        $this->session->set_flashdata('flash_message', get_phrase('updated_successfully'));
+                    } catch (\Throwable$th) {
+                        $this->session->set_flashdata('error_message', $th->getMessage());
+                    }
                 } else {
                     $this->session->set_flashdata('error_message', get_phrase('mismatch_password'));
-                    return;
                 }
+            } else {
+                $this->session->set_flashdata('error_message', get_phrase('mismatch_password'));
             }
-            $data['email'] = html_escape($this->input->post('email'));
-            $this->db->where('id', $user_id);
-            $this->db->update('users', $data);
-            $this->session->set_flashdata('flash_message', get_phrase('updated_successfully'));
+
         } else {
             $this->session->set_flashdata('error_message', get_phrase('email_duplication'));
         }
