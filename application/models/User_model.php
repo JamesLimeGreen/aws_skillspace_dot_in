@@ -31,19 +31,27 @@ class User_model extends CI_Model
         return $this->db->get_where('users', array('role_id' => 1));
     }
 
-    public function get_user($user_id = 0)
+    public function get_user($user_id = 0, $firebaseUid = '')
     {
-        // return $this->db->get('users');
+        $this->db->where('role_id', 2);
+
+        if (!$user_id && !$firebaseUid) {
+            return $this->db->get('users');
+        }
 
         try {
-            $user = $this->firebaseAuth->getUser($user_id);
 
             if ($user_id) {
-                $this->db->where('firebase_uid', $user_id);
+                $this->db->where('id', $user_id);
             }
+            if ($firebaseUid) {
+                $this->db->where('firebase_uid', $firebaseUid);
+            }
+            $this->db->where('role_id', 2);
+
             $userData = $this->db->get('users')->row_array();
+            $user = $this->firebaseAuth->getUser($userData['firebase_uid']);
             $userData['email'] = $user->email;
-            $userData['id'] = $user_id;
             $userData['mobile'] = $user->phoneNumber;
 
             return $userData;
@@ -69,7 +77,7 @@ class User_model extends CI_Model
             $data['first_name'] = html_escape($this->input->post('first_name'));
             $data['last_name'] = html_escape($this->input->post('last_name'));
             $data['email'] = html_escape($this->input->post('email'));
-            $data['password'] = sha1(html_escape($this->input->post('password')));
+            // $data['password'] = sha1(html_escape($this->input->post('password')));
             $social_link['facebook'] = html_escape($this->input->post('facebook_link'));
             $social_link['twitter'] = html_escape($this->input->post('twitter_link'));
             $social_link['linkedin'] = html_escape($this->input->post('linkedin_link'));
@@ -109,18 +117,33 @@ class User_model extends CI_Model
                 $data['is_instructor'] = 1;
             }
 
-            $this->db->insert('users', $data);
-            $user_id = $this->db->insert_id();
+            try {
+                $userProperties = [
+                    'email' => $data['email'],
+                    'emailVerified' => false,
+                    'password' => html_escape($this->input->post('password')),
+                    'displayName' => $data['first_name'] . " " . $data['last_name'],
+                    'disabled' => false,
+                ];
 
-            // IF THIS IS A USER THEN INSERT BLANK VALUE IN PERMISSION TABLE AS WELL
-            if ($is_admin) {
-                $permission_data['admin_id'] = $user_id;
-                $permission_data['permissions'] = json_encode(array());
-                $this->db->insert('permissions', $permission_data);
+                $createdUser = $this->user_model->firebaseAuth->createUser($userProperties);
+                $data['firebase_uid'] = $createdUser->uid;
+
+                $this->db->insert('users', $data);
+                $user_id = $this->db->insert_id();
+
+                // IF THIS IS A USER THEN INSERT BLANK VALUE IN PERMISSION TABLE AS WELL
+                if ($is_admin) {
+                    $permission_data['admin_id'] = $user_id;
+                    $permission_data['permissions'] = json_encode(array());
+                    $this->db->insert('permissions', $permission_data);
+                }
+
+                $this->upload_user_image($data['image']);
+                $this->session->set_flashdata('flash_message', get_phrase('user_added_successfully'));
+            } catch (\Throwable$th) {
+                $this->session->set_flashdata('error_message', $th->getMessage());
             }
-
-            $this->upload_user_image($data['image']);
-            $this->session->set_flashdata('flash_message', get_phrase('user_added_successfully'));
         }
     }
 
@@ -176,19 +199,11 @@ class User_model extends CI_Model
 
     public function check_duplication($action = "", $email = "", $user_id = "")
     {
-        $firebaseUser = null;
-        try {
-            $firebaseUser = $email ? $this->firebaseAuth->getUserByEmail($email) : null;
-        } catch (\Throwable$th) {
-            //throw $th;
-        }
+        $duplicate_email_check = $this->db->get_where('users', array('email' => $email));
 
         if ($action == 'on_create') {
-            if ($firebaseUser && $firebaseUser->uid) {
-                $this->db->where('firebase_uid', $firebaseUser->uid);
-                $userData = $this->db->get('users')->row_array();
-
-                if ($userData->status == 1) {
+            if ($duplicate_email_check->num_rows() > 0) {
+                if ($duplicate_email_check->row()->status == 1) {
                     return false;
                 } else {
                     return 'unverified_user';
@@ -197,8 +212,8 @@ class User_model extends CI_Model
                 return true;
             }
         } elseif ($action == 'on_update') {
-            if ($firebaseUser && $firebaseUser->uid) {
-                if ($firebaseUser->uid == $user_id) {
+            if ($duplicate_email_check->num_rows() > 0) {
+                if ($duplicate_email_check->row()->id == $user_id) {
                     return true;
                 } else {
                     return false;
@@ -250,13 +265,14 @@ class User_model extends CI_Model
 
                 if (isset($_POST['email'])) {
                     $email = html_escape($this->input->post('email'));
+                    $data['email'] = $email;
                     $this->firebaseAuth->changeUserEmail($user_id, $email);
                 }
                 // if (isset($_POST['mobile'])) {
                 //     $mobile = html_escape($this->input->post('mobile'));
                 // }
 
-                $this->db->where('firebase_uid', $user_id);
+                $this->db->where('id', $user_id);
                 $this->db->update('users', $data);
 
                 $this->session->set_flashdata('flash_message', get_phrase('user_update_successfully'));

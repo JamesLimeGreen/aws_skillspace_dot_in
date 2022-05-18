@@ -330,9 +330,9 @@ class Home extends CI_Controller
             redirect(site_url('home/profile/user_credentials'), 'refresh');
         } elseif ($param1 == "update_photo") {
             if (isset($_FILES['user_image']) && $_FILES['user_image']['name'] != "") {
-                unlink('uploads/user_image/' . $this->db->get_where('users', array('firebase_uid' => $this->session->userdata('user_id')))->row('image') . '.jpg');
+                unlink('uploads/user_image/' . $this->db->get_where('users', array('id' => $this->session->userdata('user_id')))->row('image') . '.jpg');
                 $data['image'] = md5(rand(10000, 10000000));
-                $this->db->where('firebase_uid', $this->session->userdata('user_id'));
+                $this->db->where('id', $this->session->userdata('user_id'));
                 $this->db->update('users', $data);
                 $this->user_model->upload_user_image($data['image']);
             }

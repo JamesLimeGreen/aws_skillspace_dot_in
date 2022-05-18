@@ -1,9 +1,9 @@
 <?php
-    $status_wise_courses = $this->crud_model->get_status_wise_courses();
-    $number_of_courses = $status_wise_courses['pending']->num_rows() + $status_wise_courses['active']->num_rows();
-    $number_of_lessons = $this->crud_model->get_lessons()->num_rows();
-    $number_of_enrolment = $this->crud_model->enrol_history()->num_rows();
-    $number_of_students = $this->user_model->get_user()->num_rows();
+$status_wise_courses = $this->crud_model->get_status_wise_courses();
+$number_of_courses = $status_wise_courses['pending']->num_rows() + $status_wise_courses['active']->num_rows();
+$number_of_lessons = $this->crud_model->get_lessons()->num_rows();
+$number_of_enrolment = $this->crud_model->enrol_history()->num_rows();
+$number_of_students = $this->user_model->get_user()->num_rows();
 ?>
 <div class="row">
     <div class="col-xl-12">
@@ -126,21 +126,21 @@
                         <tbody>
 
                             <?php
-                                $pending_payouts = $this->crud_model->get_pending_payouts()->result_array();
-                                foreach ($pending_payouts as $key => $pending_payout):
-                                $instructor_details = $this->user_model->get_all_user($pending_payout['user_id'])->row_array();
-                            ?>
-                            <tr>
-                                <td>
-                                    <h5 class="font-14 my-1"><a href="javascript:void(0);" class="text-body" style="cursor: auto;"><?php echo $instructor_details['first_name'].' '.$instructor_details['last_name']; ?></a></h5>
-                                    <small><?php echo get_phrase('email'); ?>: <span class="text-muted font-13"><?php echo $instructor_details['email']; ?></span></small>
-                                </td>
-                                <td>
-                                    <h5 class="font-14 my-1"><a href="javascript:void(0);" class="text-body" style="cursor: auto;"><?php echo currency($pending_payout['amount']); ?></a></h5>
-                                    <small><span class="text-muted font-13"><?php echo get_phrase('requested_withdrawal_amount'); ?></span></small>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
+$pending_payouts = $this->crud_model->get_pending_payouts()->result_array();
+foreach ($pending_payouts as $key => $pending_payout):
+    $instructor_details = $this->user_model->get_all_user($pending_payout['user_id'])->row_array();
+    ?>
+	                            <tr>
+	                                <td>
+	                                    <h5 class="font-14 my-1"><a href="javascript:void(0);" class="text-body" style="cursor: auto;"><?php echo $instructor_details['first_name'] . ' ' . $instructor_details['last_name']; ?></a></h5>
+	                                    <small><?php echo get_phrase('email'); ?>: <span class="text-muted font-13"><?php echo $instructor_details['email']; ?></span></small>
+	                                </td>
+	                                <td>
+	                                    <h5 class="font-14 my-1"><a href="javascript:void(0);" class="text-body" style="cursor: auto;"><?php echo currency($pending_payout['amount']); ?></a></h5>
+	                                    <small><span class="text-muted font-13"><?php echo get_phrase('requested_withdrawal_amount'); ?></span></small>
+	                                </td>
+	                            </tr>
+	                            <?php endforeach;?>
 
                         </tbody>
                     </table>

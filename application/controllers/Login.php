@@ -43,8 +43,10 @@ class Login extends CI_Controller
             if ($signInResult && $signInResult->data()) {
                 $userData = $signInResult->data();
 
-                $user = $this->user_model->get_user($userData['localId']);
+                $firebaseUID = $userData['localId'];
+                $user = $this->user_model->get_user(0, $firebaseUID);
 
+                $this->session->set_userdata('firebase_uid', $firebaseUID);
                 $this->session->set_userdata('user_id', $user['id']);
                 $this->session->set_userdata('role_id', $user['role_id']);
                 $this->session->set_userdata('role', get_user_role_by_role_id($user['role_id']));
@@ -90,14 +92,14 @@ class Login extends CI_Controller
         }
 
         $mobile = html_escape($this->input->post('mobile'));
-        $email = html_escape($this->input->post('email'));
         $password = html_escape($this->input->post('password'));
         // $data['password'] = sha1($this->input->post('password'));
+        $data['email'] = html_escape($this->input->post('email'));
 
         $data['first_name'] = html_escape($this->input->post('first_name'));
         $data['last_name'] = html_escape($this->input->post('last_name'));
 
-        if (empty($data['first_name']) || empty($data['last_name']) || empty($email) || empty($password)) {
+        if (empty($data['first_name']) || empty($data['last_name']) || empty($data['email']) || empty($password)) {
             $this->session->set_flashdata('error_message', site_phrase('your_sign_up_form_is_empty') . '. ' . site_phrase('fill_out_the_form with_your_valid_data'));
             redirect(site_url('home/sign_up'), 'refresh');
         }
@@ -140,12 +142,12 @@ class Login extends CI_Controller
         // $data['role_id'] = 1;
 
         try {
-            $validity = $this->user_model->check_duplication('on_create', $email);
+            $validity = $this->user_model->check_duplication('on_create', $data['email']);
 
             if ($validity === 'unverified_user' || $validity == true) {
                 if ($validity === true) {
                     $userProperties = [
-                        'email' => $email,
+                        'email' => $data['email'],
                         'emailVerified' => false,
                         'password' => $password,
                         'displayName' => $data['first_name'] . " " . $data['last_name'],
@@ -163,14 +165,14 @@ class Login extends CI_Controller
                 }
 
                 if (get_settings('student_email_verification') == 'enable') {
-                    $this->email_model->send_email_verification_mail($email, $verification_code);
+                    $this->email_model->send_email_verification_mail($data['email'], $verification_code);
 
                     if ($validity === 'unverified_user') {
                         $this->session->set_flashdata('info_message', get_phrase('you_have_already_registered') . '. ' . get_phrase('please_verify_your_email_address'));
                     } else {
                         $this->session->set_flashdata('flash_message', get_phrase('your_registration_has_been_successfully_done') . '. ' . get_phrase('please_check_your_mail_inbox_to_verify_your_email_address') . '.');
                     }
-                    $this->session->set_userdata('register_email', $email);
+                    $this->session->set_userdata('register_email', $data['email']);
                     redirect(site_url('home/verification_code'), 'refresh');
                 } else {
                     $this->session->set_flashdata('flash_message', get_phrase('your_registration_has_been_successfully_done'));

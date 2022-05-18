@@ -33,7 +33,11 @@ class Admin extends CI_Controller
         }
         $page_data['page_name'] = 'dashboard';
         $page_data['page_title'] = get_phrase('dashboard');
-        $this->load->view('backend/index', $page_data);
+        try {
+            $this->load->view('backend/index', $page_data);
+        } catch (\Throwable$th) {
+            die("Error" . $th->getMessage());
+        }
     }
 
     public function categories($param1 = "", $param2 = "")
