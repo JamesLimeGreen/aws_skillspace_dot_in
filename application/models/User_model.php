@@ -284,9 +284,24 @@ class User_model extends CI_Model
     }
     public function delete_user($user_id = "")
     {
-        $this->db->where('id', $user_id);
-        $this->db->delete('users');
-        $this->session->set_flashdata('flash_message', get_phrase('user_deleted_successfully'));
+        try {
+            $this->db->where('id', $user_id);
+            $userData = $this->db->get('users')->row_array();
+            if ($userData && $userData["firebase_uid"]) {
+                try {
+                    $this->firebaseAuth->deleteUser($userData["firebase_uid"]);
+                } catch (\Throwable$th) {
+                    //throw $th;
+                }
+            }
+            $this->db->where('id', $user_id);
+            $this->db->delete('users');
+            $this->session->set_flashdata('flash_message', get_phrase('user_deleted_successfully'));
+        } catch (\Throwable$th) {
+            //throw $th;
+            $this->session->set_flashdata('flash_message', $th->getMessage());
+        }
+
     }
 
     public function unlock_screen_by_password($password = "")
@@ -370,17 +385,27 @@ class User_model extends CI_Model
             $new_password = $this->input->post('new_password');
             $confirm_password = $this->input->post('confirm_password');
 
-            if ($user_details['password'] == sha1($current_password) && $new_password == $confirm_password) {
-                $data['password'] = sha1($new_password);
+            $userEmail = $user_details['email'];
+            $signInResult = null;
+            try {
+                $signInResult = $this->firebaseAuth->signInWithEmailAndPassword($userEmail, $current_password);
+            } catch (\Throwable$th) {
+            }
+
+            if ($signInResult && $signInResult->data() && $new_password == $confirm_password) {
+                try {
+                    $updatedUser = $this->firebaseAuth->changeUserPassword($user_id, $new_password);
+                    $this->session->set_flashdata('flash_message', get_phrase('password_updated'));
+                } catch (\Throwable$th) {
+                    $this->session->set_flashdata('error_message', $th->getMessage());
+                }
             } else {
                 $this->session->set_flashdata('error_message', get_phrase('mismatch_password'));
-                return;
             }
+        } else {
+            $this->session->set_flashdata('error_message', get_phrase('mismatch_password'));
         }
 
-        $this->db->where('id', $user_id);
-        $this->db->update('users', $data);
-        $this->session->set_flashdata('flash_message', get_phrase('password_updated'));
     }
 
     public function get_instructor($id = 0)
