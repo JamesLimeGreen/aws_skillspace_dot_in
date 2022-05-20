@@ -44,29 +44,38 @@ class Login extends CI_Controller
                 $userData = $signInResult->data();
 
                 $firebaseUID = $userData['localId'];
-                $user = $this->user_model->get_user(0, $firebaseUID);
 
-                $this->session->set_userdata('firebase_uid', $firebaseUID);
-                $this->session->set_userdata('user_id', $user['id']);
-                $this->session->set_userdata('role_id', $user['role_id']);
-                $this->session->set_userdata('role', get_user_role_by_role_id($user['role_id']));
-                $this->session->set_userdata('name', $user['first_name'] . ' ' . $user['last_name']);
-                $this->session->set_userdata('is_instructor', $user['is_instructor']);
-                $this->session->set_flashdata('flash_message', get_phrase('welcome') . ' ' . $user['first_name'] . ' ' . $user['last_name']);
+                $query = $this->db->get_where('users', array("firebase_uid" => $firebaseUID));
 
-                if ($user['role_id'] == 1) {
-                    $this->session->set_userdata('admin_login', '1');
-                    redirect(site_url('admin/dashboard'), 'refresh');
-                } else if ($user['role_id'] == 2) {
-                    $this->session->set_userdata('user_login', '1');
+                if ($query->num_rows() > 0) {
+                    $user = $query->row();
+                    $this->session->set_userdata('firebase_uid', $firebaseUID);
+                    $this->session->set_userdata('user_id', $user->id);
+                    $this->session->set_userdata('role_id', $user->role_id);
+                    $this->session->set_userdata('role', get_user_role_by_role_id($user->role_id));
+                    $this->session->set_userdata('name', $user->first_name . ' ' . $user->last_name);
+                    $this->session->set_userdata('is_instructor', $user->is_instructor);
+                    $this->session->set_flashdata('flash_message', get_phrase('welcome') . ' ' . $user->first_name . ' ' . $user->last_name);
 
-                    if ($this->session->userdata('url_history')) {
-                        redirect($this->session->userdata('url_history'), 'refresh');
+                    if ($user->role_id == 1) {
+                        $this->session->set_userdata('admin_login', '1');
+                        redirect(site_url('admin/dashboard'), 'refresh');
+                    } else if ($user->role_id == 2) {
+                        $this->session->set_userdata('user_login', '1');
+
+                        if ($this->session->userdata('url_history')) {
+                            redirect($this->session->userdata('url_history'), 'refresh');
+                        }
+                        redirect(site_url('home'), 'refresh');
                     }
-                    redirect(site_url('home'), 'refresh');
+                } else {
+                    $this->session->set_flashdata('error_message', get_phrase('invalid_login_credentials'));
+                    redirect(site_url('home/login'), 'refresh');
                 }
+            } else {
+                $this->session->set_flashdata('error_message', get_phrase('invalid_login_credentials'));
+                redirect(site_url('home/login'), 'refresh');
             }
-
         } catch (\Throwable$th) {
             $this->session->set_flashdata('error_message', get_phrase('invalid_login_credentials'));
             redirect(site_url('home/login'), 'refresh');
