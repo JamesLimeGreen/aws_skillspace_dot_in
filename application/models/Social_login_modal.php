@@ -47,25 +47,27 @@ class Social_login_modal extends CI_Model
                     $last_name = $user['last_name'];
 
                     $firebaseUser = null;
-                    $customClaims = null;
+                    $credential = array('email' => $email, 'status' => 1);
+                    $query = $this->db->get_where('users', $credential);
                     try {
                         //code...
                         $firebaseUser = $this->user_model->firebaseAuth->getUserByEmail($email);
-                        $customClaims = $firebaseUser ? $firebaseUser->customClaims : null;
                     } catch (\Throwable$th) {
                         //throw $th;
                     }
 
-                    if ($firebaseUser && $firebaseUser->uid && $customClaims['status'] === 1) {
-                        $this->session->set_userdata('user_id', $firebaseUser->uid);
-                        $this->session->set_userdata('role_id', $customClaims['role_id']);
-                        $this->session->set_userdata('role', get_user_role_by_role_id($customClaims['role_id']));
-                        $this->session->set_userdata('name', $customClaims['first_name'] . ' ' . $customClaims['last_name']);
-                        $this->session->set_userdata('is_instructor', $customClaims['is_instructor']);
+                    if ($firebaseUser && $firebaseUser->uid && $query->num_rows() > 0) {
+                        $row = $query->row();
+                        $this->session->set_userdata('user_id', $row->id);
+                        $this->session->set_userdata('firebase_uid', $firebaseUser->uid);
+                        $this->session->set_userdata('role_id', $row->role_id);
+                        $this->session->set_userdata('role', get_user_role('user_role', $row->id));
+                        $this->session->set_userdata('name', $row->first_name . ' ' . $row->last_name);
+                        $this->session->set_userdata('is_instructor', $row->is_instructor);
                         $this->session->set_userdata('fb_login', 1);
-                        if ($customClaims['role_id'] == 1) {
+                        if ($row->role_id == 1) {
                             $this->session->set_userdata('admin_login', '1');
-                        } else if ($customClaims['role_id'] == 2) {
+                        } else if ($row->role_id == 2) {
                             $this->session->set_userdata('user_login', '1');
                         }
 
@@ -81,7 +83,7 @@ class Social_login_modal extends CI_Model
                         $data['first_name'] = $first_name;
                         $data['last_name'] = $last_name;
                         $data['email'] = $email;
-                        $data['password'] = sha1(random(30));
+                        $password = sha1(random(30));
                         $data['status'] = 1;
 
                         $data['wishlist'] = json_encode(array());
@@ -109,7 +111,7 @@ class Social_login_modal extends CI_Model
                         array_push($stripe_info, $stripe_keys);
                         $data['stripe_keys'] = json_encode($stripe_info);
 
-                        $validity = !$firebaseUser || !$firebaseUser->uid;
+                        $validity = $this->user_model->check_duplication('on_create', $data['email']);
                         if ($validity == true) {
 
                             // Create new user to firebase
@@ -117,56 +119,34 @@ class Social_login_modal extends CI_Model
                                 'email' => $data['email'],
                                 'phoneNumber' => $data['mobile'],
                                 'emailVerified' => true,
-                                'password' => $data['password'],
+                                'password' => $password,
                                 'displayName' => $data['first_name'] . " " . $data['last_name'],
                                 'disabled' => false,
                             ];
                             try {
                                 $createdUser = $this->user_model->firebaseAuth->createUser($userProperties);
 
-                                $this->user_model->firebaseAuth->setCustomUserClaims($createdUser->uid, [
-                                    'role_id' => $data['role_id'],
-                                    'paypal_keys' => $data['paypal_keys'],
-                                    'verification_code' => $data['verification_code'],
-                                    'wishlist' => $data['wishlist'],
-                                    'watch_history' => $data['watch_history'],
-                                    'date_added' => $data['date_added'],
-                                    'social_links' => $data['social_links'],
-                                    'production_client_id' => $data['production_client_id'],
-                                    'paypal_keys' => $data['paypal_keys'],
-                                    'stripe_keys' => $data['stripe_keys'],
-                                    'first_name' => $data['first_name'],
-                                    'last_name' => $data['last_name'],
-                                    'status' => $data['status'],
-                                    'is_instructor' => 0,
-                                ]);
-                            } catch (\Throwable$th) {
+                                $this->db->insert('users', $data);
 
-                            }
-                            //login
-                            try {
-                                $firebaseUser = $this->user_model->firebaseAuth->getUserByEmail($email);
-                                $customClaims = $firebaseUser ? $firebaseUser->customClaims : null;
-                            } catch (\Throwable$th) {
-                                //throw $th;
-                            }
-
-                            if ($customClaims) {
-                                $this->session->set_userdata('user_id', $firebaseUser->uid);
-                                $this->session->set_userdata('role_id', $customClaims['role_id']);
-                                $this->session->set_userdata('role', get_user_role_by_role_id($customClaims['role_id']));
-                                $this->session->set_userdata('name', $customClaims['first_name'] . ' ' . $customClaims['last_name']);
-                                $this->session->set_userdata('is_instructor', $customClaims['is_instructor']);
+                                //login
+                                $credential = array('email' => $email, 'status' => 1);
+                                $query = $this->db->get_where('users', $credential);
+                                $row = $query->row();
+                                $this->session->set_userdata('user_id', $row->id);
+                                $this->session->set_userdata('firebase_uid', $createdUser->uid);
+                                $this->session->set_userdata('role_id', $row->role_id);
+                                $this->session->set_userdata('role', get_user_role('user_role', $row->id));
+                                $this->session->set_userdata('name', $row->first_name . ' ' . $row->last_name);
+                                $this->session->set_userdata('is_instructor', $row->is_instructor);
                                 $this->session->set_userdata('fb_login', 1);
 
-                                if ($customClaims['role_id'] == 1) {
+                                if ($row->role_id == 1) {
                                     $this->session->set_userdata('admin_login', '1');
-                                } else if ($customClaims['role_id'] == 2) {
+                                } else if ($row->role_id == 2) {
                                     $this->session->set_userdata('user_login', '1');
                                 }
-                            } else {
-                                $this->session->set_flashdata('error_message', "Cannot create account");
-                                redirect(site_url('home/login'), 'refresh');
+                            } catch (\Throwable$th) {
+                                $this->session->set_flashdata('error_message', $th->getMessage());
                             }
 
                         } else {

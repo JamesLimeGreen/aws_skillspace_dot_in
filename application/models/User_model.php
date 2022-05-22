@@ -266,7 +266,13 @@ class User_model extends CI_Model
                 if (isset($_POST['email'])) {
                     $email = html_escape($this->input->post('email'));
                     $data['email'] = $email;
-                    $this->firebaseAuth->changeUserEmail($user_id, $email);
+                    $fibreaseUid = $this->db->get_where('users', array('id' => $user_id))->row('firebase_uid');
+
+                    try {
+                        $this->firebaseAuth->changeUserEmail($fibreaseUid, $email);
+                    } catch (\Throwable$th) {
+                        //throw $th;
+                    }
                 }
                 // if (isset($_POST['mobile'])) {
                 //     $mobile = html_escape($this->input->post('mobile'));
@@ -359,7 +365,7 @@ class User_model extends CI_Model
 
                 if ($signInResult && $signInResult->data() && $new_password == $confirm_password) {
                     try {
-                        $updatedUser = $this->firebaseAuth->changeUserPassword($user_id, $new_password);
+                        $updatedUser = $this->firebaseAuth->changeUserPassword($user_details["firebase_uid"], $new_password);
                         $this->session->set_flashdata('flash_message', get_phrase('updated_successfully'));
                     } catch (\Throwable$th) {
                         $this->session->set_flashdata('error_message', $th->getMessage());
@@ -394,7 +400,7 @@ class User_model extends CI_Model
 
             if ($signInResult && $signInResult->data() && $new_password == $confirm_password) {
                 try {
-                    $updatedUser = $this->firebaseAuth->changeUserPassword($user_id, $new_password);
+                    $updatedUser = $this->firebaseAuth->changeUserPassword($user_details["firebase_uid"], $new_password);
                     $this->session->set_flashdata('flash_message', get_phrase('password_updated'));
                 } catch (\Throwable$th) {
                     $this->session->set_flashdata('error_message', $th->getMessage());

@@ -236,8 +236,14 @@ class Login extends CI_Controller
         // Checking credential for admin
         $query = $this->db->get_where('users', array('email' => $email));
         if ($query->num_rows() > 0) {
-            $this->db->where('email', $email);
-            $this->db->update('users', array('password' => sha1($new_password)));
+            $user_details = $query->row_array();
+
+            try {
+                $this->user_model->firebaseAuth->changeUserPassword($user_details['firebase_uid'], $new_password);
+            } catch (\Throwable$th) {
+
+            }
+
             // send new password to user email
             $this->email_model->password_reset_email($new_password, $email);
             $this->session->set_flashdata('flash_message', get_phrase('please_check_your_email_for_new_password'));
